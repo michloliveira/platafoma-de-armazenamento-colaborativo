@@ -1,8 +1,7 @@
 # Plataforma de nuvem para armazenamento colaborativo
 
- ### [Ruby](https://www.ruby-lang.org/pt/)
-* Ruby version 3.0.3
+ ### Ruby
+* Ruby version 2.6.9
 
- ### [Rails](https://www.ruby-lang.org/pt/)
-* Rails version 7.0.2.3
-
+ ### Rails
+* Rails version 5.2.7
