@@ -1,13 +1,30 @@
+
+<body>
+
 <p id="notice"><%= notice %></p>
 
-<div>
-<p>
-  <strong>Image data:</strong>
-  <%if @arquivo.image.present?%>
-    <%= image_tag @arquivo.image_url%>
+
+  <p>
+    <strong>Image data:</strong>
+    <%if @arquivo.image.present?%>
+      <%if @arquivo.image.metadata["mime_type"].split('/')[0] == "image"%>
+        <div class="cat">
+          <%= image_tag @arquivo.image_url%>
+          <br>
+          <%= @arquivo.image.metadata['filename']%>
+        </div>
+      <%else%>
+      <div class="icon">
+        <%= image_tag src="https://i0.wp.com/www.dailyfreepsd.com/wp-content/uploads/2013/07/Yellow-Illustration-Folder-Icon-PSD.png?fit=800%2C600&ssl=1"%>
+        <br>
+        <%= @arquivo.image.metadata['filename']%>
+      </div>
+      <% end %>
     <% end %>
-</p>
-</div>
+  </p>
+
 
 <%= link_to 'Edit', edit_arquivo_path(@arquivo) %> |
 <%= link_to 'Back', arquivos_path %>
+
+</body>
