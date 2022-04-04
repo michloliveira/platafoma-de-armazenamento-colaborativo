@@ -1,0 +1,13 @@
+<p id="notice"><%= notice %></p>
+
+<div>
+<p>
+  <strong>Image data:</strong>
+  <%if @arquivo.image.present?%>
+    <%= image_tag @arquivo.image_url%>
+    <% end %>
+</p>
+</div>
+
+<%= link_to 'Edit', edit_arquivo_path(@arquivo) %> |
+<%= link_to 'Back', arquivos_path %>
