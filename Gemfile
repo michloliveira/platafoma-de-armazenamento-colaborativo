@@ -31,9 +31,11 @@ gem "image_processing", "~> 1.0"
 
 gem 'devise'
 
-gem 'shrine', '~> 2.3', '>= 2.3.1'
+gem 'shrine', '~> 2.15', '>= 2.15.1'
 # Use ActiveStorage variant
-# gem 'mini_magick', '~> 4.8'
+gem 'mini_magick', '~> 4.8'
+
+gem 'image_processing'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
