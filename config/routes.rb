@@ -9,7 +9,10 @@ Rails.application.routes.draw do
                  sessions: 'sessions',
                  sign_up: 'registrations'
                }
+  resources :arquivos
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
-  root "static_pages#index"
+  root to: "arquivos#index"
+  #root "static_pages#index"
 end

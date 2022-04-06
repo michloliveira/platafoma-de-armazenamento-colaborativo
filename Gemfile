@@ -32,8 +32,11 @@ gem 'devise-jwt'
 
 gem 'figaro'
 
+gem 'shrine', '~> 2.15', '>= 2.15.1'
 # Use ActiveStorage variant
-# gem 'mini_magick', '~> 4.8'
+gem 'mini_magick', '~> 4.8'
+
+gem 'image_processing'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
