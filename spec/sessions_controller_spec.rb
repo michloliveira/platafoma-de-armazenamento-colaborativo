@@ -8,7 +8,7 @@ describe SessionsController, type: :request do
 
   context 'When logging in' do
     before do
-      login(user)
+      login_with_api(user)
     end
 
     it 'returns a token' do
