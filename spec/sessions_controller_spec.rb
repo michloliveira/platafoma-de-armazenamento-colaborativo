@@ -41,7 +41,10 @@ describe SessionsController, type: :request do
       delete logout_url
 
       expect(response).to have_http_status(204)
+      expect(response.headers['Authorization']).not_to be_present
     end
+
+    # checar se autorização é válida ainda quando o usuário faz o logout 
   end
 
 end
