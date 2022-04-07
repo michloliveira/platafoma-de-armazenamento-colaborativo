@@ -28,9 +28,10 @@ gem 'jbuilder', '~> 2.5'
 # gem 'bcrypt', '~> 3.1.7'
 
 gem 'devise'
-gem 'devise-jwt'
+gem 'devise-jwt', '~> 0.7.0'
 
 gem 'figaro'
+gem 'dry-configurable', '0.9.0'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
