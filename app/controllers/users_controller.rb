@@ -1,9 +1,9 @@
-class Api::UsersController < Api::BaseController
+class UsersController < BaseController
 
     before_action :find_user, only: %w[show]
   
     def show
-      render_jsonapi_response(@user)
+      render json: { data: @user }, status: :ok
     end
   
     private

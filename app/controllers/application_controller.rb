@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
       if resource.errors.empty?
         render jsonapi: resource
       else
-        render jsonapi_errors: resource.errors, status: 400
+        render json: { message: "Ocorreu um erro"}
       end
     end
   
