@@ -25,8 +25,31 @@ class ArquivosController < ApplicationController
 
     respond_to do |format|
       if @arquivo.save
-        format.html { redirect_to arquivo_url(@arquivo), notice: "Arquivo was successfully created." }
-        format.json { render :show, status: :created, location: @arquivo }
+
+        info = @arquivo.image_data
+        listaInfo = info.split('"')
+        arq = File.new("public/uploads/store/#{listaInfo[3]}", "a+")
+        cont = 0
+        arq.each do |a| 
+          if(cont == 1)
+            arq.write('')
+            break
+          end
+          cont+=1
+        end
+        # p 'p'
+        # p arq.readline
+        # p 'p'
+        # arq.write("sadasdasdasdasds")
+        arq2 = Arquivo.new(image: arq, description: @arquivo.description)
+        arq2.save
+        @arquivo.destroy
+
+        #@arquivo.save
+
+        format.html { redirect_to arquivo_url(arq2), notice: "Arquivo was successfully created." }
+        format.json { render :show, status: :created, location: arq2 }
+        
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @arquivo.errors, status: :unprocessable_entity }

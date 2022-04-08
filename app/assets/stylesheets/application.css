@@ -13,6 +13,9 @@
  *= require_tree .
  *= require_self
  */
+ .footer {
+    position: absolute;
+ }
 
  img {
     max-height: 100%;
@@ -22,8 +25,21 @@
    .cat {
     margin-left:10px;
         margin-right:10px;
+        width:400px;
+        height:400px;
+        background: #F7F7F7;
+        padding: 25px 15px 25px 10px;
+        font: 18px Georgia, "Times New Roman", Times, serif;
+        color: rgb(15, 34, 179);
+        text-shadow: 1px 1px 1px #FFF;
+        border:auto;
+   }
+
+   .cat1 {
+    margin-left:10px;
+        margin-right:10px;
         width:auto;
-        height:auto;
+        height:300px;
         background: #F7F7F7;
         padding: 25px 15px 25px 10px;
         font: 18px Georgia, "Times New Roman", Times, serif;
