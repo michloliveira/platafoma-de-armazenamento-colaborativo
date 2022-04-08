@@ -78,6 +78,35 @@ body {
   border-width: 2px;
 }
 
+.file-data {
+  width: calc(100vw - 60px);
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  .data-col-img {
+    margin: 10px;
+    width: 50%;
+    height: 60vh;
+    background-color: lightgray;
+    object-fit: contain;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .data-col-text {
+    margin: 10px;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    .data-text {
+      margin: 0;
+      margin-bottom: 5px;
+      color: black;
+      font-size: 14px;
+    }
+  }
+}
+
 p, ol, ul, td {
   font-family: verdana, arial, helvetica, sans-serif;
   font-size: 13px;
