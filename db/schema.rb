@@ -10,13 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_03_232955) do
+ActiveRecord::Schema.define(version: 2022_04_08_021107) do
 
   create_table "arquivos", force: :cascade do |t|
     t.text "image_data"
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.string "cripto_tipo"
+    t.string "cripto_chave"
+    t.index ["user_id"], name: "index_arquivos_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

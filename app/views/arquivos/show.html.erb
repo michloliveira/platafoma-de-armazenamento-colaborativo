@@ -8,7 +8,7 @@
     <strong>Image data:</strong>
     <%if @arquivo.image.present?%>      
         <%if @arquivo.image.metadata["mime_type"].split('/')[0] == "image"%>
-          <div class="cat"> %>
+          <div class="cat">
             <%= image_tag @arquivo.image_url%>
             <br>
             <%= @arquivo.image.metadata['filename']%>

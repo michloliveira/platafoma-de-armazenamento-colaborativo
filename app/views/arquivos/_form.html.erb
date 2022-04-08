@@ -26,6 +26,11 @@
     <%= form.text_area :description %>
   </div>
 
+  <div class="field">
+    <%= form.label :Tipo_de_criptografia%>
+    <%= form.select :cripto_tipo, ['Linha', 'Cesar', 'MD5']%>
+  </div>
+
 
   <div class="actions">
     <%= form.submit %>

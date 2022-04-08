@@ -21,29 +21,43 @@ class ArquivosController < ApplicationController
 
   # POST /arquivos or /arquivos.json
   def create
+    
     @arquivo = Arquivo.new(arquivo_params)
+    user = User.first
+    @arquivo.user = user
 
     respond_to do |format|
       if @arquivo.save
-
         info = @arquivo.image_data
+
+
         listaInfo = info.split('"')
+
+        
+
         arq = File.new("public/uploads/store/#{listaInfo[3]}", "a+")
-        cont = 0
-        arq.each do |a| 
-          if(cont == 1)
-            arq.write('')
-            break
+        
+        if @arquivo.cripto_tipo == "Linha"
+          cont = 0
+          arq.each do |a| 
+            if(cont == 1)
+
+              arq.write('')
+              break
+            end
+            cont+=1
           end
-          cont+=1
+          
         end
-        # p 'p'
-        # p arq.readline
-        # p 'p'
-        # arq.write("sadasdasdasdasds")
-        arq2 = Arquivo.new(image: arq, description: @arquivo.description)
+        
+        arq2 = Arquivo.new(image: arq, description: @arquivo.description, user_id: 1, cripto_tipo: @arquivo.cripto_tipo)
+        JSON.parse(arq2.image_data)["metadata"]["filename"] = listaInfo[13]
+        
+
         arq2.save
         @arquivo.destroy
+        
+        
 
         #@arquivo.save
 
@@ -88,6 +102,6 @@ class ArquivosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def arquivo_params
-      params.require(:arquivo).permit(:image, :description)
+      params.require(:arquivo).permit(:image, :description, :user_id, :cripto_tipo, :cripto_chave)
     end
 end
