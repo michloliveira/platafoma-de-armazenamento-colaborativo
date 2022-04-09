@@ -1,0 +1,42 @@
+<p id="notice"><%= notice %></p>
+
+<h1 class="page-title">Arquivos</h1>
+
+<div class="cards-list">
+  <% @arquivos.each do |arquivo| %>
+    <div class="card">
+      <%if arquivo.image.present?%>      
+        <%if arquivo.image.metadata["mime_type"].split('/')[0] == "image"%>
+          <div class="card-image">
+            <%= image_tag arquivo.image_url%>
+          </div>
+          <div class="card-subtitle">
+            <%= arquivo.image.metadata['filename']%>
+          </div>
+        <%else%>
+          <div class="card-image">
+            <%= image_tag src="https://i0.wp.com/www.dailyfreepsd.com/wp-content/uploads/2013/07/Yellow-Illustration-Folder-Icon-PSD.png?fit=800%2C600&ssl=1"%>
+          </div>
+          <div class="card-subtitle">
+            <%= arquivo.image.metadata['filename']%>
+          </div>
+        <% end %>
+      <% end %>
+      <div class="card-actions row">
+        <%= button_to arquivo, method: :get, class:'icon-button' do %>
+          <i class="fa fa-eye"></i>
+        <% end %>
+        <%= button_to edit_arquivo_path(arquivo), method: :get, class:'icon-button' do %>
+          <i class="fa fa-pencil"></i>
+        <% end %>
+        <%= button_to arquivo, method: :delete, data: { confirm: 'Are you sure?' }, class:'icon-button' do %>
+          <i class="fa fa-trash"></i>
+        <% end %>
+      </div>
+    </div> 
+  <% end %>
+</div>
+
+<%= button_to new_arquivo_path, method: :get, class:'button' do %>
+  Enviar Novo Arquivo
+<% end %>

@@ -1,0 +1,10 @@
+<h1 class="page-title">Editar Arquivo</h1>
+
+<%= render 'form', arquivo: @arquivo %>
+
+<%= button_to @arquivo, method: :get, class:'button' do %>
+    Visualizar Arquivo
+<% end %>
+<%= button_to arquivos_path, method: :get, class:'button' do %>
+    Voltar
+<% end %>

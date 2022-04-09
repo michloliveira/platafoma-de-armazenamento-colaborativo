@@ -34,14 +34,17 @@ gem 'figaro'
 gem 'dry-configurable', '0.9.0'
 gem 'rack-cors'
 
+gem 'shrine', '~> 2.15', '>= 2.15.1'
 # Use ActiveStorage variant
-# gem 'mini_magick', '~> 4.8'
+gem 'mini_magick', '~> 4.8'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
+
+gem "font-awesome-rails"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

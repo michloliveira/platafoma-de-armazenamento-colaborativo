@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<h1 class="page-title">Dados do Arquivo</h1>
+
+  <%if @arquivo.image.present?%>
+    <div class="file-data">
+      <%if @arquivo.image.metadata["mime_type"].split('/')[0] == "image"%>
+        <div class="data-col-img">
+          <%= image_tag @arquivo.image_url%>
+        </div>
+        <div class="data-col-text">
+          <p class="data-text">Nome: <%= @arquivo.image.metadata['filename']%></p>
+          <p class="data-text">Descrição: <%= @arquivo.description%></p>
+        </div>
+        <%else%>
+          <div class="data-col-img">
+            <%= image_tag src="https://i0.wp.com/www.dailyfreepsd.com/wp-content/uploads/2013/07/Yellow-Illustration-Folder-Icon-PSD.png?fit=800%2C600&ssl=1"%>
+          </div>
+          <div class="data-col-text">
+            <p class="data-text">Nome: <%= @arquivo.image.metadata['filename']%></p>
+            <p class="data-text">Descrição: <%= @arquivo.description%></p>
+            <p class="data-text">Tamanho: <%= @arquivo.image.metadata['size']%></p>
+            <p class="data-text">Data de envio: <%= @arquivo.created_at %></p>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+<%= button_to edit_arquivo_path(@arquivo), method: :get, class:'button' do %>
+  Editar Arquivo
+<% end %>
+<%= button_to arquivos_path, method: :get, class:'button' do %>
+  Voltar
+<% end %>

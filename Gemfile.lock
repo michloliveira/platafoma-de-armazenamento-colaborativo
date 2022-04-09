@@ -74,6 +74,7 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.10)
+    content_disposition (1.0.0)
     crass (1.0.6)
     devise (4.8.1)
       bcrypt (~> 3.0)
@@ -84,7 +85,10 @@ GEM
     devise-jwt (0.7.0)
       devise (~> 4.0)
       warden-jwt_auth (~> 0.4)
+    down (5.3.1)
+      addressable (~> 2.8)
     diff-lcs (1.5.0)
+
     dry-auto_inject (0.8.0)
       dry-container (>= 0.3.4)
     dry-configurable (0.9.0)
@@ -131,6 +135,7 @@ GEM
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
+    mini_magick (4.11.0)
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
     minitest (5.15.0)
@@ -215,6 +220,9 @@ GEM
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2)
+    shrine (2.19.4)
+      content_disposition (~> 1.0)
+      down (>= 4.1, < 6)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -273,12 +281,14 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   jsonapi-rspec
   listen (>= 3.0.5, < 3.2)
+  mini_magick (~> 4.8)
   puma (~> 3.11)
   rack-cors
   rails (~> 5.2.7)
   rspec-rails
   sass-rails (~> 5.0)
   selenium-webdriver
+  shrine (~> 2.15, >= 2.15.1)
   spring
   spring-watcher-listen (~> 2.0.0)
   sqlite3
@@ -291,4 +301,4 @@ RUBY VERSION
    ruby 2.6.9p207
 
 BUNDLED WITH
-   1.17.2
+   1.17.3

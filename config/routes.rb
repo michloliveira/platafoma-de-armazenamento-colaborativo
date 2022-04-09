@@ -1,18 +1,22 @@
 Rails.application.routes.draw do
-  namespace :api, defaults: { format: :json } do
-    resources :users, only: %w[show]
-  end
 
   devise_for :users,
-    defaults: { format: :json },
-    path: '',
-    path_names: {
-      sign_in: 'api/login',
-      sign_out: 'api/logout',
-      registration: 'api/signup'
-    },
-    controllers: {
-      sessions: 'sessions',
-      registrations: 'registrations'
-    }
+  defaults: { format: :json },
+  path: '',
+  path_names: {
+                 sign_in: 'login',
+                 sign_out: 'logout',
+                 sign_up: 'sign_up'
+               },
+  controllers: {
+                 sessions: 'sessions',
+                 sign_up: 'registrations'
+               }
+  resources :arquivos
+
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  root to: "users/login"
+  #root "static_pages#index"
+
 end
