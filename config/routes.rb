@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
+
   devise_for :users,
+  defaults: { format: :json },
+  path: '',
   path_names: {
                  sign_in: 'login',
                  sign_out: 'logout',
@@ -13,6 +16,7 @@ Rails.application.routes.draw do
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
-  root to: "arquivos#index"
+  root to: "users/login"
   #root "static_pages#index"
+
 end
