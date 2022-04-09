@@ -34,8 +34,7 @@ class ArquivosController < ApplicationController
         listaInfo = info.split('"')
 
         
-
-        arq = File.new("public/uploads/store/#{listaInfo[3]}", "a+")
+        arq = File.new("public/uploads/store/#{listaInfo[3]}", "r+")
         
         if @arquivo.cripto_tipo == "Linha"
           cont = 0
@@ -47,7 +46,28 @@ class ArquivosController < ApplicationController
             end
             cont+=1
           end
-          
+
+        elsif @arquivo.cripto_tipo == "Cesar"
+          cesar = Cesar.new('', 13)
+
+          tmp = []
+          leitura = arq.readlines
+          leitura.each do |a|
+            cesar.text = a
+            novaLinha = cesar.cipher
+            tmp.append(novaLinha)
+          end
+
+          arq.close unless arq.closed?
+
+          arqTmp = File.new("public/uploads/store/#{listaInfo[3]}", "w")
+
+          tmp.each  do |t|
+            arqTmp.write(t)
+          end
+
+
+
         end
         
         arq2 = Arquivo.new(image: arq, description: @arquivo.description, user_id: 1, cripto_tipo: @arquivo.cripto_tipo)
