@@ -1,10 +1,112 @@
+@import "font-awesome";
+
 body {
-  background-color: #fff;
-  color: #333;
-  margin: 33px;
+  background-color: white;
+  color: black;
+  margin: 30px;
   font-family: verdana, arial, helvetica, sans-serif;
   font-size: 13px;
   line-height: 18px;
+  .page-title {
+    margin-left: 10px;
+  }
+  .button_to {
+    width: auto;
+    display: inline;
+    .button {
+      font-size: 13px;
+      height: 30px;
+      text-align: center;
+      margin: 0 10px;
+    }
+  }
+}
+
+.cards-list {
+  width: calc(100vw - 60px);
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.card {
+  margin: 10px;
+  border-radius: 5%;
+  border: solid lightgray;
+  border-width: 2px;
+  width: 200px;
+  align-items: center;
+  .card-image {
+    height: 100px;
+    background-color: lightgray;
+    max-width: 100%;
+    object-fit: contain;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .card-subtitle {
+    padding: 5px 10px;
+    color: black;
+    font-size: 14px;
+    overflow: hidden;
+    line-clamp: 2;
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+  }
+  .card-actions {
+    padding: 10px 15px;
+    width:170px;
+    text-align: center;
+    .button_to {
+      width: auto;
+      display: inline;
+      .icon-button {
+        width: 30px;
+        height: 30px;
+        font-size: 15px;
+        text-align: center;
+        margin: 0 10px;
+      }
+    }
+  }
+}
+
+.card:hover {
+  border: solid gray;
+  border-width: 2px;
+}
+
+.file-data {
+  width: calc(100vw - 60px);
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  .data-col-img {
+    margin: 10px;
+    width: 50%;
+    height: 60vh;
+    background-color: lightgray;
+    object-fit: contain;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .data-col-text {
+    margin: 10px;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    .data-text {
+      margin: 0;
+      margin-bottom: 5px;
+      color: black;
+      font-size: 14px;
+      overflow: hidden;
+      word-wrap: break-word;
+    }
+  }
 }
 
 p, ol, ul, td {

@@ -1,5 +1,7 @@
-<h1>New Arquivo</h1>
+<h1 class="page-title">Enviar Novo Arquivo</h1>
 
 <%= render 'form', arquivo: @arquivo %>
 
-<%= link_to 'Back', arquivos_path %>
+<%= button_to arquivos_path, method: :get, class:'button' do %>
+    Voltar
+<% end %>

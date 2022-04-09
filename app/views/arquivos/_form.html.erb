@@ -18,7 +18,6 @@
     <%= form.label :image %>
     <%= form.hidden_field :image, value: arquivo.cached_image_data %>
     <%= form.file_field :image %>
-    
   </div>
 
   <div class="field">
@@ -30,7 +29,6 @@
     <%= form.label :Tipo_de_criptografia%>
     <%= form.select :cripto_tipo, ['Linha', 'Cesar', 'MD5']%>
   </div>
-
 
   <div class="actions">
     <%= form.submit %>
