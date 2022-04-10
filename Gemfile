@@ -77,3 +77,5 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'aes', '~> 0.5.1'
+
+gem 'down'

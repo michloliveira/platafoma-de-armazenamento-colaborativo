@@ -14,8 +14,9 @@ class DownloadsController < ApplicationController
             cripto_aes(arq)
           end
 
+        # File.delete("public/uploads/store/#{@listaInfo[3]}") if File.exist?("public/uploads/store/#{@listaInfo[3]}")
 
-        tempfile = Down.download("http://localhost:3000/" + @arq2.image_url, destination: "~/Downloads")
+        tempfile = Down.download("http://localhost:3000/" + @arq2.image_url, destination: "../../Downloads")
         @arq2.destroy
         
         respond_to do |format|
@@ -91,6 +92,8 @@ class DownloadsController < ApplicationController
         arqTmpNew = File.new("public/uploads/store/#{@listaInfo[3]}", "r")
         arqTmpNew
         @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: 1, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
+
+        
             
         # JSON.parse(@arq2.image_data)["metadata"]["filename"] = @listaInfo[13]
         
