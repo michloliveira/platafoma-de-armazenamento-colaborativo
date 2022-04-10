@@ -1,6 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<h1 class="page-title">Arquivos</h1>
+<h1 class="page-title">User Files</h1>
 
 <div class="cards-list">
   <% @arquivos.each do |arquivo| %>
@@ -29,14 +29,17 @@
         <%= button_to edit_arquivo_path(arquivo), method: :get, class:'icon-button' do %>
           <i class="fa fa-pencil"></i>
         <% end %>
+        <%= button_to download_arquivo_url(arquivo), method: :get, class:'icon-button' do %>
+          <i class="fa fa-download"></i>
+        <% end %>
         <%= button_to arquivo, method: :delete, data: { confirm: 'Are you sure?' }, class:'icon-button' do %>
           <i class="fa fa-trash"></i>
-        <% end %>
+        <% end %>    
       </div>
     </div> 
   <% end %>
 </div>
 
 <%= button_to new_arquivo_path, method: :get, class:'button' do %>
-  Enviar Novo Arquivo
+  Upload new file
 <% end %>

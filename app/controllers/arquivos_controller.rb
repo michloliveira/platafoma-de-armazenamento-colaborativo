@@ -34,7 +34,7 @@ class ArquivosController < ApplicationController
     respond_to do |format|
       if @arquivo.save       
         if @arquivo.cripto_tipo == 'No_cypto'
-          format.html { redirect_to arquivo_url(@arquivo), notice: "Arquivo was successfully created." }
+          format.html { redirect_to arquivo_url(@arquivo), notice: "File was successfully created." }
           format.json { render :show, status: :created, location: @arquivo }       
         else   
           arq = abrir_arquivo()
@@ -47,7 +47,7 @@ class ArquivosController < ApplicationController
             cripto_aes(arq)
           end
           
-          format.html { redirect_to arquivo_url(@arq2), notice: "Arquivo was successfully created." }
+          format.html { redirect_to arquivo_url(@arq2), notice: "File was successfully created." }
           format.json { render :show, status: :created, location: @arq2 }      
         end
       else
@@ -61,7 +61,7 @@ class ArquivosController < ApplicationController
   def update
     respond_to do |format|
       if @arquivo.update(arquivo_params)
-        format.html { redirect_to arquivo_url(@arquivo), notice: "Arquivo was successfully updated." }
+        format.html { redirect_to arquivo_url(@arquivo), notice: "File was successfully updated." }
         format.json { render :show, status: :ok, location: @arquivo }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -75,7 +75,7 @@ class ArquivosController < ApplicationController
     @arquivo.destroy
 
     respond_to do |format|
-      format.html { redirect_to arquivos_url, notice: "Arquivo was successfully destroyed." }
+      format.html { redirect_to arquivos_url, notice: "File was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -156,14 +156,6 @@ class ArquivosController < ApplicationController
     # Only allow a list of trusted parameters through.
     def arquivo_params
       params.require(:arquivo).permit(:image, :description, :user_id, :cripto_tipo, :cripto_chave)
-    end
-
-    def download
-      
-      info = @arquivo.image_data
-      @listaInfo = info.split('"')
-      tempfile = Down.download("public/uploads/store/#{@listaInfo[3]}")
-    
     end
 
 end

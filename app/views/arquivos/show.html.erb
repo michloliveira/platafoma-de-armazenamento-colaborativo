@@ -1,6 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<h1 class="page-title">Dados do Arquivo</h1>
+<h1 class="page-title">File Data</h1>
 
   <%if @arquivo.image.present?%>
     <div class="file-data">
@@ -9,31 +9,31 @@
           <%= image_tag @arquivo.image_url%>
         </div>
         <div class="data-col-text">
-          <p class="data-text">Nome: <%= @arquivo.image.metadata['filename']%></p>
-          <p class="data-text">Descrição: <%= @arquivo.description%></p>
-          <p class="data-text">Descrição: <%= @arquivo.cripto_chave%></p>
+          <p class="data-text">Name: <%= @arquivo.image.metadata['filename']%></p>
+          <p class="data-text">Description: <%= @arquivo.description%></p>
+          <p class="data-text">Key: <%= @arquivo.cripto_chave%></p>
         </div>
         <%else%>
           <div class="data-col-img">
             <%= image_tag src="https://i0.wp.com/www.dailyfreepsd.com/wp-content/uploads/2013/07/Yellow-Illustration-Folder-Icon-PSD.png?fit=800%2C600&ssl=1"%>
           </div>
           <div class="data-col-text">
-            <p class="data-text">Nome: <%= @arquivo.image.metadata['filename']%></p>
-            <p class="data-text">Descrição: <%= @arquivo.description%></p>
-            <p class="data-text">Tamanho: <%= @arquivo.image.metadata['size']%></p>
-            <p class="data-text">Data de envio: <%= @arquivo.created_at %></p>
-            <p class="data-text">Descrição: <%= @arquivo.cripto_chave%></p>
+            <p class="data-text">Name: <%= @arquivo.image.metadata['filename']%></p>
+            <p class="data-text">Description: <%= @arquivo.description%></p>
+            <p class="data-text">Size: <%= @arquivo.image.metadata['size']%></p>
+            <p class="data-text">Upload Date: <%= @arquivo.created_at %></p>
+            <p class="data-text">Key: <%= @arquivo.cripto_chave%></p>
         </div>
       <% end %>
     </div>
   <% end %>
 
 <%= button_to edit_arquivo_path(@arquivo), method: :get, class:'button' do %>
-  Editar Arquivo
+  Edit File
 <% end %>
 <%= button_to download_arquivo_url(@arquivo), method: :get, class:'button' do %>
-  Baixar Arquivo
+  Download
 <% end %>
 <%= button_to arquivos_path, method: :get, class:'button' do %>
-  Voltar
+  Back
 <% end %>
