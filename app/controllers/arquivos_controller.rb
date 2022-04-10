@@ -28,81 +28,32 @@ class ArquivosController < ApplicationController
     @arquivo = Arquivo.new(arquivo_params)
     user = User.first
     @arquivo.user = user
+    @chave = ""
 
     respond_to do |format|
-      if @arquivo.save
-        info = @arquivo.image_data
-
-
-        listaInfo = info.split('"')
-
+      if @arquivo.save       
         
-        arq = File.new("public/uploads/store/#{listaInfo[3]}", "r+")
-        chave = ""
+        arq = abrir_arquivo()
+
         if @arquivo.cripto_tipo == "Linha"
-          cont = 0
-          temp_linha = []
-          arq.each do |a|
-            if(cont == 1)
-              chave = a
-              temp_linha.append("")
-            else
-              temp_linha.append(a)
-            end
-
-            cont+=1
-          end
-
-          arq.close unless arq.closed?
-
-          arqTmp = File.new("public/uploads/store/#{listaInfo[3]}", "w")
-
-          temp_linha.each  do |t|
-            arqTmp.write(t)
-          end
+          
+          temp_linha, arqTmp = linha(arq)
 
         elsif @arquivo.cripto_tipo == "Cesar"
-          cesar = Cesar.new('', 13)
-          chave = 13.to_s
-          tmp = []         
-          arq.each do |a|
-            cesar.text = a
-            novaLinha = cesar.cipher
-            tmp << novaLinha
-          end
-
-          arq.close unless arq.closed?
-
-          arqTmp = File.new("public/uploads/store/#{listaInfo[3]}", "w")
-
-          tmp.each  do |t|
-            arqTmp.write(t.force_encoding("UTF-8"))
-          end
-
+          
+          tmp, arqTmp = cesar(arq)
 
         end
-        arqTmp.close unless arqTmp.closed?
-        arqTmpNew = File.new("public/uploads/store/#{listaInfo[3]}", "r")
-        arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: 1, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: chave)
-        JSON.parse(arq2.image_data)["metadata"]["filename"] = listaInfo[13]
-        
-
-        arq2.save
-        @arquivo.destroy
-        
-        
-
-        #@arquivo.save
-
-        format.html { redirect_to arquivo_url(arq2), notice: "Arquivo was successfully created." }
-        format.json { render :show, status: :created, location: arq2 }
-        
+                        
+        format.html { redirect_to arquivo_url(@arq2), notice: "Arquivo was successfully created." }
+        format.json { render :show, status: :created, location: @arq2 }       
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @arquivo.errors, status: :unprocessable_entity }
+        format.json { render json: @arq2.errors, status: :unprocessable_entity }
       end
     end
   end
+  
 
   # PATCH/PUT /arquivos/1 or /arquivos/1.json
   def update
@@ -127,6 +78,66 @@ class ArquivosController < ApplicationController
     end
   end
 
+  def abrir_arquivo()
+    info = @arquivo.image_data
+
+
+    @listaInfo = info.split('"')
+
+    
+    arq = File.new("public/uploads/store/#{@listaInfo[3]}", "r+")
+
+    arq
+  end
+
+  def linha(arquivo)
+    cont = 0
+    temp_linha = []
+    arquivo.each do |a|
+      if(cont == 1)
+        @chave = a
+        temp_linha.append("")
+      else
+        temp_linha.append(a)
+      end
+      cont+=1
+    end
+    arqTmp = escrever_arquivo(temp_linha, arquivo)
+    return temp_linha,arqTmp
+  end
+
+  def cesar(arquivo)
+    cesar = Cesar.new('', 13)
+    @chave = 13.to_s
+    tmp = []         
+    arquivo.each do |a|
+      cesar.text = a
+      novaLinha = cesar.cipher
+      tmp << novaLinha
+    end
+    arqTmp = escrever_arquivo(tmp, arquivo)
+    return tmp,arqTmp
+  end
+
+  def escrever_arquivo(tmp, arq)
+    arq.close unless arq.closed?
+
+    arqTmp = File.new("public/uploads/store/#{@listaInfo[3]}", "w")
+
+    tmp.each  do |t|
+      arqTmp.write(t.force_encoding("UTF-8"))
+    end
+    arqTmp.close unless arqTmp.closed?
+    arqTmpNew = File.new("public/uploads/store/#{@listaInfo[3]}", "r")
+    arqTmpNew
+    @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: 1, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
+        
+    # JSON.parse(@arq2.image_data)["metadata"]["filename"] = @listaInfo[13]
+    
+    @arq2.save
+    @arquivo.destroy
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_arquivo
@@ -137,4 +148,6 @@ class ArquivosController < ApplicationController
     def arquivo_params
       params.require(:arquivo).permit(:image, :description, :user_id, :cripto_tipo, :cripto_chave)
     end
+
+
 end
