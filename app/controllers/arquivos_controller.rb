@@ -35,16 +35,14 @@ class ArquivosController < ApplicationController
         
         arq = abrir_arquivo()
 
-        if @arquivo.cripto_tipo == "Linha"
-          
-          temp_linha, arqTmp = linha(arq)
-
-        elsif @arquivo.cripto_tipo == "Cesar"
-          
-          tmp, arqTmp = cesar(arq)
-
+        if @arquivo.cripto_tipo == "Linha"          
+          linha(arq)
+        elsif @arquivo.cripto_tipo == "Cesar"         
+          cesar(arq)
+        else #Cripto eh AES
+          cripto_aes(arq)
         end
-                        
+        
         format.html { redirect_to arquivo_url(@arq2), notice: "Arquivo was successfully created." }
         format.json { render :show, status: :created, location: @arq2 }       
       else
@@ -54,7 +52,6 @@ class ArquivosController < ApplicationController
     end
   end
   
-
   # PATCH/PUT /arquivos/1 or /arquivos/1.json
   def update
     respond_to do |format|
@@ -81,9 +78,7 @@ class ArquivosController < ApplicationController
   def abrir_arquivo()
     info = @arquivo.image_data
 
-
     @listaInfo = info.split('"')
-
     
     arq = File.new("public/uploads/store/#{@listaInfo[3]}", "r+")
 
@@ -102,8 +97,7 @@ class ArquivosController < ApplicationController
       end
       cont+=1
     end
-    arqTmp = escrever_arquivo(temp_linha, arquivo)
-    return temp_linha,arqTmp
+    escrever_arquivo(temp_linha, arquivo)
   end
 
   def cesar(arquivo)
@@ -115,8 +109,18 @@ class ArquivosController < ApplicationController
       novaLinha = cesar.cipher
       tmp << novaLinha
     end
-    arqTmp = escrever_arquivo(tmp, arquivo)
-    return tmp,arqTmp
+    escrever_arquivo(tmp, arquivo)
+  end
+
+  def cripto_aes(arq)
+    @chave = AES.key          
+    tmp = []         
+    arq.each do |a|
+      novaLinha = AES.encrypt(a, @chave)
+      tmp << novaLinha
+    end
+    
+    escrever_arquivo(tmp, arq)
   end
 
   def escrever_arquivo(tmp, arq)
