@@ -11,6 +11,7 @@
         <div class="data-col-text">
           <p class="data-text">Nome: <%= @arquivo.image.metadata['filename']%></p>
           <p class="data-text">Descrição: <%= @arquivo.description%></p>
+          <p class="data-text">Descrição: <%= @arquivo.cripto_chave%></p>
         </div>
         <%else%>
           <div class="data-col-img">
@@ -21,6 +22,7 @@
             <p class="data-text">Descrição: <%= @arquivo.description%></p>
             <p class="data-text">Tamanho: <%= @arquivo.image.metadata['size']%></p>
             <p class="data-text">Data de envio: <%= @arquivo.created_at %></p>
+            <p class="data-text">Descrição: <%= @arquivo.cripto_chave%></p>
         </div>
       <% end %>
     </div>

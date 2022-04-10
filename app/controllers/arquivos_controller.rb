@@ -1,3 +1,6 @@
+$LOAD_PATH << '.'
+require 'app/services/cesar_cripto.rb'
+
 class ArquivosController < ApplicationController
   before_action :set_arquivo, only: %i[ show edit update destroy ]
 
@@ -35,42 +38,56 @@ class ArquivosController < ApplicationController
 
         
         arq = File.new("public/uploads/store/#{listaInfo[3]}", "r+")
-        
+        chave = ""
         if @arquivo.cripto_tipo == "Linha"
           cont = 0
-          arq.each do |a| 
+          temp_linha = []
+          arq.each do |a|
             if(cont == 1)
-
-              arq.write('')
-              break
+              chave = a
+              temp_linha.append("")
+            else
+              temp_linha.append(a)
             end
+
             cont+=1
-          end
-
-        elsif @arquivo.cripto_tipo == "Cesar"
-          cesar = Cesar.new('', 13)
-
-          tmp = []
-          leitura = arq.readlines
-          leitura.each do |a|
-            cesar.text = a
-            novaLinha = cesar.cipher
-            tmp.append(novaLinha)
           end
 
           arq.close unless arq.closed?
 
           arqTmp = File.new("public/uploads/store/#{listaInfo[3]}", "w")
 
-          tmp.each  do |t|
+          temp_linha.each  do |t|
             arqTmp.write(t)
           end
+
+        elsif @arquivo.cripto_tipo == "Cesar"
+          cesar = Cesar.new('', 13)
+          chave = 13.to_s
+          tmp = ""
+          leitura = arq.readlines
+          leitura.each do |a|
+            cesar.text = a
+            novaLinha = cesar.cipher
+            tmp += novaLinha
+          end
+
+          arq.close unless arq.closed?
+
+          arqTmp = File.new("public/uploads/store/#{listaInfo[3]}", "w")
+
+          # tmp.each  do |t|
+          #   arqTmp.write(t)
+          # end
+
+          arqTmp.write(tmp)
 
 
 
         end
-        
-        arq2 = Arquivo.new(image: arq, description: @arquivo.description, user_id: 1, cripto_tipo: @arquivo.cripto_tipo)
+        arqTmp.close unless arqTmp.closed?
+        arqTmpNew = File.new("public/uploads/store/#{listaInfo[3]}", "r")
+        arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: 1, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: chave)
         JSON.parse(arq2.image_data)["metadata"]["filename"] = listaInfo[13]
         
 
