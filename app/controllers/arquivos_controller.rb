@@ -1,5 +1,6 @@
 $LOAD_PATH << '.'
 require 'app/services/cesar_cripto.rb'
+require "down"
 
 class ArquivosController < ApplicationController
   before_action :set_arquivo, only: %i[ show edit update destroy ]
@@ -32,22 +33,26 @@ class ArquivosController < ApplicationController
 
     respond_to do |format|
       if @arquivo.save       
-        
-        arq = abrir_arquivo()
+        if @arquivo.cripto_tipo == 'No_cypto'
+          format.html { redirect_to arquivo_url(@arquivo), notice: "Arquivo was successfully created." }
+          format.json { render :show, status: :created, location: @arquivo }       
+        else   
+          arq = abrir_arquivo()
 
-        if @arquivo.cripto_tipo == "Linha"          
-          linha(arq)
-        elsif @arquivo.cripto_tipo == "Cesar"         
-          cesar(arq)
-        else #Cripto eh AES
-          cripto_aes(arq)
+          if @arquivo.cripto_tipo == "Linha"          
+            linha(arq)
+          elsif @arquivo.cripto_tipo == "Cesar"         
+            cesar(arq)
+          else #Cripto eh AES
+            cripto_aes(arq)
+          end
+          
+          format.html { redirect_to arquivo_url(@arq2), notice: "Arquivo was successfully created." }
+          format.json { render :show, status: :created, location: @arq2 }      
         end
-        
-        format.html { redirect_to arquivo_url(@arq2), notice: "Arquivo was successfully created." }
-        format.json { render :show, status: :created, location: @arq2 }       
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @arq2.errors, status: :unprocessable_entity }
+        format.json { render json: @arquivo.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -153,5 +158,12 @@ class ArquivosController < ApplicationController
       params.require(:arquivo).permit(:image, :description, :user_id, :cripto_tipo, :cripto_chave)
     end
 
+    def download
+      
+      info = @arquivo.image_data
+      @listaInfo = info.split('"')
+      tempfile = Down.download("public/uploads/store/#{@listaInfo[3]}")
+    
+    end
 
 end

@@ -31,6 +31,9 @@
 <%= button_to edit_arquivo_path(@arquivo), method: :get, class:'button' do %>
   Editar Arquivo
 <% end %>
+<%= button_to download_arquivo_url(@arquivo), method: :get, class:'button' do %>
+  Baixar Arquivo
+<% end %>
 <%= button_to arquivos_path, method: :get, class:'button' do %>
   Voltar
 <% end %>

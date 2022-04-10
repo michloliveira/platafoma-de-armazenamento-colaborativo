@@ -18,5 +18,6 @@ Rails.application.routes.draw do
 
   #root to: "sessions#new"
   root "static_pages#index"
+  get "downloads/:id", to: "downloads#new", as: "download_arquivo" 
 
 end
