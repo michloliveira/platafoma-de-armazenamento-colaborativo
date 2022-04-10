@@ -78,9 +78,27 @@ class ArquivosController < ApplicationController
           tmp.each  do |t|
             arqTmp.write(t.force_encoding("UTF-8"))
           end
+        
+        else #Cripto eh AES
+          chave = AES.key
+          
+          tmp = []         
+          arq.each do |a|
+            novaLinha = AES.encrypt(a, chave)
+            tmp << novaLinha
+          end
 
+          arq.close unless arq.closed?
 
+          arqTmp = File.new("public/uploads/store/#{listaInfo[3]}", "w")
+
+          tmp.each  do |t|
+            arqTmp.write(t.force_encoding("UTF-8"))
+          end
+
+          
         end
+
         arqTmp.close unless arqTmp.closed?
         arqTmpNew = File.new("public/uploads/store/#{listaInfo[3]}", "r")
         arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: 1, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: chave)
