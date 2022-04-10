@@ -10,7 +10,6 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
 ActiveRecord::Schema.define(version: 2022_04_08_021107) do
 
   create_table "arquivos", force: :cascade do |t|
@@ -22,14 +21,12 @@ ActiveRecord::Schema.define(version: 2022_04_08_021107) do
     t.string "cripto_tipo"
     t.string "cripto_chave"
     t.index ["user_id"], name: "index_arquivos_on_user_id"
-
-ActiveRecord::Schema.define(version: 2022_04_07_002019) do
+  end
 
   create_table "jwt_denylist", force: :cascade do |t|
     t.string "jti", null: false
     t.datetime "expired_at", null: false
     t.index ["jti"], name: "index_jwt_denylist_on_jti"
-
   end
 
   create_table "users", force: :cascade do |t|
