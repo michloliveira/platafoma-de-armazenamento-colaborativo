@@ -64,24 +64,20 @@ class ArquivosController < ApplicationController
         elsif @arquivo.cripto_tipo == "Cesar"
           cesar = Cesar.new('', 13)
           chave = 13.to_s
-          tmp = ""
-          leitura = arq.readlines
-          leitura.each do |a|
+          tmp = []         
+          arq.each do |a|
             cesar.text = a
             novaLinha = cesar.cipher
-            tmp += novaLinha
+            tmp << novaLinha
           end
 
           arq.close unless arq.closed?
 
           arqTmp = File.new("public/uploads/store/#{listaInfo[3]}", "w")
 
-          # tmp.each  do |t|
-          #   arqTmp.write(t)
-          # end
-
-          arqTmp.write(tmp)
-
+          tmp.each  do |t|
+            arqTmp.write(t.force_encoding("UTF-8"))
+          end
 
 
         end
