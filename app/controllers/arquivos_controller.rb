@@ -31,8 +31,10 @@ class ArquivosController < ApplicationController
     @arquivo.user = user
     @chave = ""
 
+    @cached_id = JSON.parse(@arquivo.cached_image_data)["id"]
+
     respond_to do |format|
-      if @arquivo.save       
+      if @arquivo.save
         if @arquivo.cripto_tipo == 'No_cypto'
           format.html { redirect_to arquivo_url(@arquivo), notice: "File was successfully created." }
           format.json { render :show, status: :created, location: @arquivo }       
@@ -46,7 +48,9 @@ class ArquivosController < ApplicationController
           else #Cripto eh AES
             cripto_aes(arq)
           end
-          
+
+          File.delete("public/uploads/cache/#{@cached_id}") if File.exist?("public/uploads/cache/#{@cached_id}")
+          File.delete("public/uploads/store/#{@filename3}") if File.exist?("public/uploads/store/#{@filename3}")
           format.html { redirect_to arquivo_url(@arq2), notice: "File was successfully created." }
           format.json { render :show, status: :created, location: @arq2 }      
         end
@@ -84,6 +88,7 @@ class ArquivosController < ApplicationController
     info = @arquivo.image_data
 
     @listaInfo = info.split('"')
+    @filename, @extensao = @listaInfo[13].split('.')
     
     arq = File.new("public/uploads/store/#{@listaInfo[3]}", "r+")
 
@@ -131,19 +136,18 @@ class ArquivosController < ApplicationController
   def escrever_arquivo(tmp, arq)
     arq.close unless arq.closed?
 
-    arqTmp = File.new("public/uploads/store/#{@listaInfo[3]}", "w")
+    arqTmp = File.new("public/uploads/store/#{@filename+" - Encrypt_"+@arquivo.cripto_tipo+"."+@extensao}", "w")
 
     tmp.each  do |t|
       arqTmp.write(t.force_encoding("UTF-8"))
     end
     arqTmp.close unless arqTmp.closed?
-    arqTmpNew = File.new("public/uploads/store/#{@listaInfo[3]}", "r")
+    arqTmpNew = File.new("public/uploads/store/#{@filename+" - Encrypt_"+@arquivo.cripto_tipo+"."+@extensao}", "r")
     arqTmpNew
     @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: 1, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
-        
-    # JSON.parse(@arq2.image_data)["metadata"]["filename"] = @listaInfo[13]
     
     @arq2.save
+    @filename3 = JSON.parse(@arq2.image_data)["id"]
     @arquivo.destroy
   end
 

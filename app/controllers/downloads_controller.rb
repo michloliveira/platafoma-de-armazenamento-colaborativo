@@ -4,6 +4,10 @@ class DownloadsController < ApplicationController
     before_action :set_arquivo
 
     def new 
+
+
+      @filename0 = JSON.parse(@arquivo.image_data)["metadata"]["filename"]
+
         arq = abrir_arquivo()
 
         if @arquivo.cripto_tipo == "Linha"          
@@ -17,6 +21,10 @@ class DownloadsController < ApplicationController
         # File.delete("public/uploads/store/#{@listaInfo[3]}") if File.exist?("public/uploads/store/#{@listaInfo[3]}")
 
         tempfile = Down.download("http://localhost:3000/" + @arq2.image_url, destination: "../../Downloads")
+        @filename2 = JSON.parse(@arq2.image_data)["metadata"]["filename"]
+        File.delete("public/uploads/cache/#{@filename2}") if File.exist?("public/uploads/cache/#{@filename2}")
+        File.delete("public/uploads/store/#{@filename2}") if File.exist?("public/uploads/store/#{@filename2}")
+        File.delete("public/uploads/cache/#{@cached_id}") if File.exist?("public/uploads/cache/#{@cached_id}")
         @arq2.destroy
         
         respond_to do |format|
@@ -34,7 +42,7 @@ class DownloadsController < ApplicationController
         info = @arquivo.image_data
         @listaInfo = info.split('"')
               
-        arq = File.new("public/uploads/store/#{@listaInfo[3]}", "r+")
+        arq = File.new("public/uploads/store/#{@filename0}", "r+")
     
         arq
     end
@@ -95,7 +103,7 @@ class DownloadsController < ApplicationController
 
         
             
-        # JSON.parse(@arq2.image_data)["metadata"]["filename"] = @listaInfo[13]
+        @cached_id = JSON.parse(@arq2.cached_image_data)["id"]
         
         @arq2.save
 
