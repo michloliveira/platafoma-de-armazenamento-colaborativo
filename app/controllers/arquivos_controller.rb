@@ -99,9 +99,8 @@ class ArquivosController < ApplicationController
     cont = 0
     temp_linha = []
     arquivo.each do |a|
-      if(cont == 1)
+      if(cont == 2)
         @chave = a
-        temp_linha.append("")
       else
         temp_linha.append(a)
       end
@@ -144,7 +143,7 @@ class ArquivosController < ApplicationController
     arqTmp.close unless arqTmp.closed?
     arqTmpNew = File.new("public/uploads/store/#{@filename+" - Encrypt_"+@arquivo.cripto_tipo+"."+@extensao}", "r")
     arqTmpNew
-    @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: 1, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
+    @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: current_user.id, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
     
     @arq2.save
     @filename3 = JSON.parse(@arq2.image_data)["id"]

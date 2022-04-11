@@ -1,23 +1,24 @@
 Rails.application.routes.draw do
 
-  devise_for :users,
-  defaults: { format: :json },
-  path: '',
-  path_names: {
-                 sign_in: 'login',
-                 sign_out: 'logout',
-                 sign_up: 'sign_up'
-               },
-  controllers: {
-                 sessions: 'sessions',
-                 sign_up: 'registrations'
-               }
+  
   resources :arquivos
-
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-
-  #root to: "sessions#new"
-  root "static_pages#index"
+  
+  devise_for :users, :controllers => {:registrations => "registrations"}
+  resources :users, :only => [:show]
+  
   get "downloads/:id", to: "downloads#new", as: "download_arquivo" 
-
+  root "static_pages#index"
 end
+
+# defaults: { format: :json },
+# devise_for :users,
+# path: '',
+# path_names: {
+  #              sign_in: 'login',
+#                sign_out: 'logout',
+#                sign_up: 'sign_up'
+#              },
+# controllers: {
+#                sessions: 'sessions',
+#                sign_up: 'registrations'
+#              }

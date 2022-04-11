@@ -4,12 +4,10 @@ class DownloadsController < ApplicationController
     before_action :set_arquivo
 
     def new 
-
-
       @filename0 = JSON.parse(@arquivo.image_data)["metadata"]["filename"]
-
-        arq = abrir_arquivo()
-
+      arq = abrir_arquivo()
+      if current_user.id == @arquivo.user_id
+        
         if @arquivo.cripto_tipo == "Linha"          
             linha(arq)
           elsif @arquivo.cripto_tipo == "Cesar"         
@@ -17,20 +15,28 @@ class DownloadsController < ApplicationController
           else #Cripto eh AES
             cripto_aes(arq)
           end
+      
+      else
+        @arq2 = Arquivo.new(image: arq, description: @arquivo.description, user_id: current_user.id, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
+        @cached_id = JSON.parse(@arq2.cached_image_data)["id"]
+      end
 
-        # File.delete("public/uploads/store/#{@listaInfo[3]}") if File.exist?("public/uploads/store/#{@listaInfo[3]}")
+      Dir.mkdir("../../download_teste") unless File.exists?("../../download_teste")
 
-        tempfile = Down.download("http://localhost:3000/" + @arq2.image_url, destination: "../../Downloads")
-        @filename2 = JSON.parse(@arq2.image_data)["metadata"]["filename"]
-        File.delete("public/uploads/cache/#{@filename2}") if File.exist?("public/uploads/cache/#{@filename2}")
-        File.delete("public/uploads/store/#{@filename2}") if File.exist?("public/uploads/store/#{@filename2}")
-        File.delete("public/uploads/cache/#{@cached_id}") if File.exist?("public/uploads/cache/#{@cached_id}")
-        @arq2.destroy
-        
-        respond_to do |format|
-            format.html { redirect_to arquivos_path, notice: "File was successfully download." }
-            #format.json { render :show, status: :created, location: @arquivo }    
-        end
+      tempfile = Down.download("http://localhost:3000/" + @arq2.image_url, destination: "../../download_teste")
+
+      @filename2 = JSON.parse(@arq2.image_data)["metadata"]["filename"]
+      
+      File.delete("public/uploads/cache/#{@cached_id}") if File.exist?("public/uploads/cache/#{@cached_id}")
+      if current_user.id == @arquivo.user_id
+        File.delete("public/uploads/store/#{@filename2}") if File.exist?("public/uploads/store/#{@filename2}")      
+      end
+      @arq2.destroy
+      
+      respond_to do |format|
+          format.html { redirect_to arquivos_path, notice: "File was successfully download." }
+          #format.json { render :show, status: :created, location: @arquivo }    
+      end
     end
 
 
@@ -51,16 +57,16 @@ class DownloadsController < ApplicationController
         cont = 0
         temp_linha = []
         arquivo.each do |a|
-          if(cont == 1)
-            @chave = a
-            temp_linha.append("")
+          if(cont == 2)
+            temp_linha << @arquivo.cripto_chave
+            temp_linha << a
           else
-            temp_linha.append(a)
+            temp_linha << a
           end
           cont+=1
         end
         escrever_arquivo(temp_linha, arquivo)
-      end
+    end
     
       def cesar(arquivo)
         cesar = Cesar.new('', 13)
@@ -75,10 +81,13 @@ class DownloadsController < ApplicationController
       end
     
       def cripto_aes(arq)
-        @chave = AES.key          
+        @chave = @arquivo.cripto_chave          
         tmp = []         
         arq.each do |a|
-          novaLinha = AES.encrypt(a, @chave)
+          puts "=-=-==-=-=-="
+          puts a
+          puts "-=-=--=--=--="
+          novaLinha = AES.decrypt(a, @chave)
           tmp << novaLinha
         end
         
@@ -99,10 +108,8 @@ class DownloadsController < ApplicationController
         
         arqTmpNew = File.new("public/uploads/store/#{@listaInfo[3]}", "r")
         arqTmpNew
-        @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: 1, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
-
-        
-            
+        @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: current_user.id, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
+                   
         @cached_id = JSON.parse(@arq2.cached_image_data)["id"]
         
         @arq2.save
