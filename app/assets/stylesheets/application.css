@@ -19,36 +19,31 @@
 }
 
 .header {
+  width: calc(100vw-20px);
   overflow: hidden;
-  background-color: #f1f1f1;
-  padding: 10px 10px;
+  background-color: lightsalmon;
+  padding: 10px;
 }
 
-.header a {
-  float: left;
+.header-option {
+  float: right;
   color: black;
   text-align: center;
   padding: 10px;
-  margin: 0px 0px 0px 20px;
+  margin: 0 5px;
   text-decoration: none;
-  font-size: 18px; 
-  line-height: 10px;
-  border-radius: 4px;
+  font-size: 16px; 
+  border-radius: 5px;
 }
 
-
 .header a:hover {
-    background-color: #ddd;
+  background-color: lightgray;
   color: black;
 }
 
-
-.header-right {
-  float: right;
+.footer {
+  position: absolute;
 }
- .footer {
-    position: absolute;
- }
 
  img {
     max-height: 100%;
