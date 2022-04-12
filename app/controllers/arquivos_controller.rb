@@ -2,6 +2,7 @@ $LOAD_PATH << '.'
 require 'app/services/cesar_cripto.rb'
 require "down"
 
+
 class ArquivosController < ApplicationController
   before_action :set_arquivo, only: %i[ show edit update destroy ]
 
@@ -123,12 +124,20 @@ class ArquivosController < ApplicationController
 
   def cripto_aes(arq)
     @chave = AES.key          
-    tmp = []         
+    tmp = []      
+    cont = 0   
+    palavra = ""
     arq.each do |a|
-      novaLinha = AES.encrypt(a, @chave)
-      tmp << novaLinha
+      if (cont == 0)
+        for b in 0..9 do
+          palavra += a[b]
+        end 
+        novaLinha = AES.encrypt(palavra, @chave)
+        tmp << novaLinha
+      end
+
+      cont = cont + 1
     end
-    
     escrever_arquivo(tmp, arq)
   end
 

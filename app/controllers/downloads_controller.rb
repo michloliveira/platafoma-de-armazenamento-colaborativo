@@ -82,13 +82,19 @@ class DownloadsController < ApplicationController
     
       def cripto_aes(arq)
         @chave = @arquivo.cripto_chave          
-        tmp = []         
+        tmp = []   
+        cont = 0  
+        palavra = ""    
         arq.each do |a|
-          puts "=-=-==-=-=-="
-          puts a
-          puts "-=-=--=--=--="
-          novaLinha = AES.decrypt(a, @chave)
-          tmp << novaLinha
+          if (cont == 0)
+            for b in 0..48 do
+              palavra += a[b]
+            end 
+            novaLinha = AES.decrypt(palavra, @chave)
+            tmp << novaLinha
+          end
+    
+          cont = cont + 1
         end
         
         escrever_arquivo(tmp, arq)
