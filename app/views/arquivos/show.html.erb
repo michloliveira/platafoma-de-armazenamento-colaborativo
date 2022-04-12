@@ -26,9 +26,11 @@
     </div>
   <% end %>
 
-<%= button_to download_arquivo_url(@arquivo), method: :get, class:'button' do %>
-  Download
-<% end %>
-<%= button_to arquivos_path, method: :get, class:'button' do %>
-  Back
-<% end %>
+<div class='buttons-container'>
+  <%= button_to download_arquivo_url(@arquivo), method: :get, class:'button' do %>
+    Download
+  <% end %>
+  <%= button_to arquivos_path, method: :get, class:'button' do %>
+    Back
+  <% end %>
+</div>

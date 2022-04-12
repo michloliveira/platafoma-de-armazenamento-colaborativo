@@ -2,6 +2,8 @@
 
 <%= render 'form', arquivo: @arquivo %>
 
-<%= button_to arquivos_path, method: :get, class:'button' do %>
-    Back
-<% end %>
+<div class='buttons-container'>
+    <%= button_to arquivos_path, method: :get, class:'button' do %>
+        Back
+    <% end %>
+</div>
