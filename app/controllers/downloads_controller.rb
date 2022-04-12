@@ -8,12 +8,13 @@ class DownloadsController < ApplicationController
       arq = abrir_arquivo()
       if current_user.id == @arquivo.user_id
         
-        if @arquivo.cripto_tipo == "Linha"          
+          if @arquivo.cripto_tipo == "Remove Line"          
             linha(arq)
-          elsif @arquivo.cripto_tipo == "Cesar"         
+          elsif @arquivo.cripto_tipo == "Caesar"         
             cesar(arq)
-          else #Cripto eh AES
+          elsif @arquivo.cripto_tipo == "AES"
             cripto_aes(arq)
+            
           end
       
       else
@@ -86,13 +87,16 @@ class DownloadsController < ApplicationController
         cont = 0  
         palavra = ""    
         arq.each do |a|
-          if (cont == 0)
+          if (cont == 3)
             for b in 0..48 do
-              palavra += a[b]
+              palavra += a[b].to_s
             end 
-            novaLinha = AES.decrypt(palavra, @chave)
-            tmp << novaLinha
+            novaLinha = AES.decrypt(palavra.force_encoding("UTF-8"), @chave)
+            tmp << novaLinha.force_encoding("UTF-8") + a[49..(a.length)]
+          else
+            tmp << a
           end
+
     
           cont = cont + 1
         end
