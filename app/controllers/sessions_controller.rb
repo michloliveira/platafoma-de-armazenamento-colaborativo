@@ -1,13 +1,18 @@
 class SessionsController < Devise::SessionsController
-
-  private
-  
-  def respond_with(resource, _opts = {})
-    render json: { message: 'You are logged in.' }, status: :ok
+  def create
+    user = User.find_by_email(sign_in_params[:email])
+    if user && user.valid_password?(sign_in_params[:password])
+      @current_user = user
+      redirect_to arquivos_path, jwt_user: user.generate_jwt, status: 200
+    else
+      render json: { errors: { 'email or password' => ['is invalid'] } }, status: :unprocessable_entity # lançar erro 
+    end
   end
 
-  def respond_to_on_destroy
-    head :no_content
+  def delete 
+    @current_user = nil
+    sign_out user
+    # render "static_pages#index"
+    render json: { message: "You are logged out" }
   end
-
 end

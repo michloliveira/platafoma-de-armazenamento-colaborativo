@@ -1,18 +1,33 @@
 Rails.application.routes.draw do
-  namespace :api, defaults: { format: :json } do
-    resources :users, only: %w[show]
-  end
+
 
   devise_for :users,
-    defaults: { format: :json },
-    path: '',
-    path_names: {
-      sign_in: 'api/login',
-      sign_out: 'api/logout',
-      registration: 'api/signup'
-    },
-    controllers: {
-      sessions: 'sessions',
-      registrations: 'registrations'
-    }
+  
+    controllers: { 
+      sessions: :sessions
+     },                   
+    path_names: { 
+      sign_in: :login
+     }
+
+  resources :arquivos
+  
+  devise_for :users, :controllers => {:registrations => "registrations"}
+  resources :users, :only => [:show]
+  
+  get "downloads/:id", to: "downloads#new", as: "download_arquivo" 
+  root "static_pages#index"
 end
+
+# defaults: { format: :json },
+# devise_for :users,
+# path: '',
+# path_names: {
+  #              sign_in: 'login',
+#                sign_out: 'logout',
+#                sign_up: 'sign_up'
+#              },
+# controllers: {
+#                sessions: 'sessions',
+#                sign_up: 'registrations'
+#              }
