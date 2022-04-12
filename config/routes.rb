@@ -1,6 +1,15 @@
 Rails.application.routes.draw do
 
+
+  devise_for :users,
   
+    controllers: { 
+      sessions: :sessions
+     },                   
+    path_names: { 
+      sign_in: :login
+     }
+
   resources :arquivos
   
   devise_for :users, :controllers => {:registrations => "registrations"}
