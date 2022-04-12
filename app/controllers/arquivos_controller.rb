@@ -2,12 +2,19 @@ $LOAD_PATH << '.'
 require 'app/services/cesar_cripto.rb'
 require "down"
 
+
 class ArquivosController < ApplicationController
   before_action :set_arquivo, only: %i[ show edit update destroy ]
+  before_action :redireciona, only: %i[edit update]
+
+  def redireciona
+    redirect_to root_path
+  end
 
   # GET /arquivos or /arquivos.json
   def index
     @arquivos = Arquivo.all
+    @meus_arquivos = Arquivo.where(user_id: current_user.id)
   end
 
   # GET /arquivos/1 or /arquivos/1.json
@@ -27,27 +34,30 @@ class ArquivosController < ApplicationController
   def create
     
     @arquivo = Arquivo.new(arquivo_params)
-    user = User.first
-    @arquivo.user = user
+    @arquivo.user = current_user
     @chave = ""
 
+    @cached_id = JSON.parse(@arquivo.cached_image_data)["id"]
+
     respond_to do |format|
-      if @arquivo.save       
+      if @arquivo.save
         if @arquivo.cripto_tipo == 'No_cypto'
-          format.html { redirect_to arquivo_url(@arquivo), notice: "Arquivo was successfully created." }
+          format.html { redirect_to arquivo_url(@arquivo), notice: "File was successfully created." }
           format.json { render :show, status: :created, location: @arquivo }       
         else   
           arq = abrir_arquivo()
 
-          if @arquivo.cripto_tipo == "Linha"          
+          if @arquivo.cripto_tipo == "Remove Line"          
             linha(arq)
-          elsif @arquivo.cripto_tipo == "Cesar"         
+          elsif @arquivo.cripto_tipo == "Caesar"         
             cesar(arq)
           else #Cripto eh AES
             cripto_aes(arq)
           end
-          
-          format.html { redirect_to arquivo_url(@arq2), notice: "Arquivo was successfully created." }
+
+          File.delete("public/uploads/cache/#{@cached_id}") if File.exist?("public/uploads/cache/#{@cached_id}")
+          File.delete("public/uploads/store/#{@filename3}") if File.exist?("public/uploads/store/#{@filename3}")
+          format.html { redirect_to arquivo_url(@arq2), notice: "File was successfully created." }
           format.json { render :show, status: :created, location: @arq2 }      
         end
       else
@@ -61,7 +71,7 @@ class ArquivosController < ApplicationController
   def update
     respond_to do |format|
       if @arquivo.update(arquivo_params)
-        format.html { redirect_to arquivo_url(@arquivo), notice: "Arquivo was successfully updated." }
+        format.html { redirect_to arquivo_url(@arquivo), notice: "File was successfully updated." }
         format.json { render :show, status: :ok, location: @arquivo }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -75,7 +85,7 @@ class ArquivosController < ApplicationController
     @arquivo.destroy
 
     respond_to do |format|
-      format.html { redirect_to arquivos_url, notice: "Arquivo was successfully destroyed." }
+      format.html { redirect_to arquivos_url, notice: "File was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -84,6 +94,16 @@ class ArquivosController < ApplicationController
     info = @arquivo.image_data
 
     @listaInfo = info.split('"')
+    
+      @extensao = ""
+      lista = @listaInfo[13].split('.')
+      lista.each_with_index do |l, index|
+        if index > 0
+          @extensao += "." + l 
+        end
+      end
+      @filename = lista[0]
+    
     
     arq = File.new("public/uploads/store/#{@listaInfo[3]}", "r+")
 
@@ -94,9 +114,8 @@ class ArquivosController < ApplicationController
     cont = 0
     temp_linha = []
     arquivo.each do |a|
-      if(cont == 1)
+      if(cont == 2)
         @chave = a
-        temp_linha.append("")
       else
         temp_linha.append(a)
       end
@@ -118,32 +137,44 @@ class ArquivosController < ApplicationController
   end
 
   def cripto_aes(arq)
-    @chave = AES.key          
-    tmp = []         
+    @chave = AES.key
+
+
+    tmp = []      
+    cont = 0   
+    palavra = ""
     arq.each do |a|
-      novaLinha = AES.encrypt(a, @chave)
-      tmp << novaLinha
+      if (cont == 3)
+        for b in 0..9 do
+          palavra += a[b].to_s       
+        end 
+        novaLinha = AES.encrypt(palavra, @chave)
+        tmp << novaLinha + a[10..(a.length)]
+      else
+        tmp << a
+      end
+
+
+      cont = cont + 1
     end
-    
     escrever_arquivo(tmp, arq)
   end
 
   def escrever_arquivo(tmp, arq)
     arq.close unless arq.closed?
 
-    arqTmp = File.new("public/uploads/store/#{@listaInfo[3]}", "w")
+    arqTmp = File.new("public/uploads/store/#{@filename+" - Encrypt_"+@arquivo.cripto_tipo+@extensao}", "w")
 
     tmp.each  do |t|
       arqTmp.write(t.force_encoding("UTF-8"))
     end
     arqTmp.close unless arqTmp.closed?
-    arqTmpNew = File.new("public/uploads/store/#{@listaInfo[3]}", "r")
+    arqTmpNew = File.new("public/uploads/store/#{@filename+" - Encrypt_"+@arquivo.cripto_tipo+@extensao}", "r")
     arqTmpNew
-    @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: 1, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
-        
-    # JSON.parse(@arq2.image_data)["metadata"]["filename"] = @listaInfo[13]
+    @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: current_user.id, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
     
     @arq2.save
+    @filename3 = JSON.parse(@arq2.image_data)["id"]
     @arquivo.destroy
   end
 
@@ -156,14 +187,6 @@ class ArquivosController < ApplicationController
     # Only allow a list of trusted parameters through.
     def arquivo_params
       params.require(:arquivo).permit(:image, :description, :user_id, :cripto_tipo, :cripto_chave)
-    end
-
-    def download
-      
-      info = @arquivo.image_data
-      @listaInfo = info.split('"')
-      tempfile = Down.download("public/uploads/store/#{@listaInfo[3]}")
-    
     end
 
 end
