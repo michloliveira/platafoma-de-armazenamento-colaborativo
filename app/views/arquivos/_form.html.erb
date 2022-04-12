@@ -11,26 +11,28 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%if arquivo.image.present?%>
-    <%= image_tag arquivo.image_url%>
-    <% end %>
-    <%= form.label :image %>
-    <%= form.hidden_field :image, value: arquivo.cached_image_data %>
-    <%= form.file_field :image %>
-  </div>
+  <div class='page-content-card'>
+    <div class='form-field-upload'>
+      <%if arquivo.image.present?%>
+      <%= image_tag arquivo.image_url%>
+      <% end %>
+      <%= form.label :image %>
+      <%= form.hidden_field :image, value: arquivo.cached_image_data %>
+      <%= form.file_field :image %>
+    </div>
 
-  <div class="field">
-    <%= form.label :description %>
-    <%= form.text_area :description %>
-  </div>
+    <div class="form-field">
+      <%= form.label :description %>
+      <%= form.text_area :description %>
+    </div>
 
-  <div class="field">
-    <%= form.label :Crypto_Type%>
-    <%= form.select :cripto_tipo, ['Remove Line', 'Caesar', 'AES', 'No_cypto']%>
-  </div>
+    <div class="form-field-select">
+      <%= form.label :Crypto_Type%>
+      <%= form.select :cripto_tipo, ['Remove Line', 'Caesar', 'AES', 'No_cypto']%>
+    </div>
 
-  <div class="actions">
-    <%= form.submit %>
+    <div class="form-field-actions">
+      <%= form.submit %>
+    </div>
   </div>
 <% end %>

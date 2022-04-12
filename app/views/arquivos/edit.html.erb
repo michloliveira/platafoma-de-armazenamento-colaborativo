@@ -2,9 +2,11 @@
 
 <%= render 'form', arquivo: @arquivo %>
 
-<%= button_to @arquivo, method: :get, class:'button' do %>
-    Visualizar Arquivo
-<% end %>
-<%= button_to arquivos_path, method: :get, class:'button' do %>
-    Voltar
-<% end %>
+<div class='buttons-container'>
+    <%= button_to @arquivo, method: :get, class:'button' do %>
+        Visualizar Arquivo
+    <% end %>
+    <%= button_to arquivos_path, method: :get, class:'button' do %>
+        Voltar
+    <% end %>
+</div>
