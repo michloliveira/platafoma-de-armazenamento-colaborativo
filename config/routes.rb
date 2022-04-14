@@ -1,19 +1,18 @@
 Rails.application.routes.draw do
-
-
   devise_for :users,
-  
     controllers: { 
-      sessions: :sessions
+      sessions: :sessions,
+      sign_up: :registrations
      },                   
     path_names: { 
-      sign_in: :login
+      sign_in: :login,
+      sign_out: :logout,
+      sign_up: :sign_up
+
      }
 
   resources :arquivos
   
-  devise_for :users, :controllers => {:registrations => "registrations"}
-  resources :users, :only => [:show]
   
   get "downloads/:id", to: "downloads#new", as: "download_arquivo" 
   root "static_pages#index"
