@@ -224,6 +224,20 @@ body {
   justify-content: center;
 }
 
+.button-link {
+  font-size: 14px;
+  line-height: 30px;
+  text-decoration: none;
+  height: 30px;
+  text-align: center;
+  margin-right: 10px;
+  color: white;
+  background-color: black;
+  border: none;
+  border-radius: 5px;
+  padding: 0 10px;
+}
+
 p, ol, ul, td {
   font-family: verdana, arial, helvetica, sans-serif;
   font-size: 13px;
