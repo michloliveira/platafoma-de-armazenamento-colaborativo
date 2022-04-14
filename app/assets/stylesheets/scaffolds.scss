@@ -216,6 +216,14 @@ body {
   }
 }
 
+.botao-redir-arq {
+  margin: 0 10vw 20px 10vw;
+  padding: 10px;
+  width: 80vw;
+  display: grid;
+  justify-content: center;
+}
+
 p, ol, ul, td {
   font-family: verdana, arial, helvetica, sans-serif;
   font-size: 13px;

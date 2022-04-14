@@ -35,7 +35,7 @@ class DownloadsController < ApplicationController
       @arq2.destroy
       
       respond_to do |format|
-          format.html { redirect_to arquivos_path, notice: "File was successfully download." }
+          format.html { redirect_to arquivos_path, notice: "File was successfully downloaded." }
           #format.json { render :show, status: :created, location: @arquivo }    
       end
     end
