@@ -22,7 +22,9 @@ class DownloadsController < ApplicationController
         @cached_id = JSON.parse(@arq2.cached_image_data)["id"]
       end
 
-      Dir.mkdir("../../download_teste") unless File.exists?("../../download_teste")
+      if current_user.id == @arquivo.user_id 
+        puts(current_user.id, @arquivo.user_id)
+        Dir.mkdir("../../download_teste") unless File.exists?("../../download_teste")
 
       tempfile = Down.download("http://localhost:3000/" + @arq2.image_url, destination: "../../download_teste")
 
@@ -38,6 +40,14 @@ class DownloadsController < ApplicationController
           format.html { redirect_to arquivos_path, notice: "File was successfully download." }
           #format.json { render :show, status: :created, location: @arquivo }    
       end
+
+    else 
+      respond_to do |format|
+        format.html { redirect_to arquivos_path, alert: "You are not authorized to download another users' files." }    
+    end
+
+      end 
+      
     end
 
 
