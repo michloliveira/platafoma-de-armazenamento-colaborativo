@@ -1,6 +1,7 @@
 $LOAD_PATH << '.'
 require 'app/services/cesar_cripto.rb'
 require "down"
+#require 'app/services/compactacao.rb'
 
 
 class ArquivosController < ApplicationController
@@ -41,6 +42,22 @@ class ArquivosController < ApplicationController
 
     respond_to do |format|
       if @arquivo.save
+
+        info = @arquivo.image_data
+
+        @listaInfo = info.split('"')
+        
+        @extensao = ""
+        lista = @listaInfo[13].split('.')
+        lista.each_with_index do |l, index|
+          if index > 0
+            @extensao += "." + l 
+          end
+        end
+        @filename = lista[0]
+
+        Compactacao.new(current_user, @filename + ".zip").generate("public/uploads/store/#{@listaInfo[3]}")
+
         if @arquivo.cripto_tipo == 'No_cypto'
           format.html { redirect_to arquivo_url(@arquivo), notice: "File was successfully created." }
           format.json { render :show, status: :created, location: @arquivo }       
@@ -99,13 +116,14 @@ class ArquivosController < ApplicationController
       lista = @listaInfo[13].split('.')
       lista.each_with_index do |l, index|
         if index > 0
-          @extensao += "." + l 
+          #@extensao += "." + l 
+          @extensao = ".zip"
         end
       end
       @filename = lista[0]
     
     
-    arq = File.new("public/uploads/store/#{@listaInfo[3]}", "r+")
+    arq = File.new("tmp/#{@filename}.zip", "r+")
 
     arq
   end
