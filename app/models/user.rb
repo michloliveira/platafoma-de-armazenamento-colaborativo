@@ -4,7 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   
-  has_many :arquivos
+  has_many :copia
+  has_many :arquivos, through: :copia
 
   def generate_jwt
     JWT.encode({ id: id,

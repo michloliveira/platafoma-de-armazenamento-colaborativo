@@ -1,5 +1,6 @@
 class Arquivo < ApplicationRecord
     include ImageUploader::Attachment(:image)
-    belongs_to :user
+    has_many :copia
+    has_many :users, through: :copia
     validates :description, presence: true
 end

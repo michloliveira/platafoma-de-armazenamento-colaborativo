@@ -1,6 +1,9 @@
 $LOAD_PATH << '.'
 require 'app/services/cesar_cripto.rb'
 require "down"
+require 'tempfile'
+require 'net/http'
+require 'digest/md5'
 #require 'app/services/compactacao.rb'
 
 
@@ -15,7 +18,7 @@ class ArquivosController < ApplicationController
   # GET /arquivos or /arquivos.json
   def index
     @arquivos = Arquivo.all
-    @meus_arquivos = Arquivo.where(user_id: current_user.id)
+    @meus_arquivos = Arquivo.joins(:copia).where(copia: {user_id: current_user.id})
   end
 
   # GET /arquivos/1 or /arquivos/1.json
@@ -35,7 +38,7 @@ class ArquivosController < ApplicationController
   def create
     
     @arquivo = Arquivo.new(arquivo_params)
-    @arquivo.user = current_user
+  #  @arquivo.user = current_user
     @chave = ""
 
     @cached_id = JSON.parse(@arquivo.cached_image_data)["id"]
@@ -56,12 +59,17 @@ class ArquivosController < ApplicationController
         end
         @filename = lista[0]
 
+        file1 = File.new("public/uploads/store/#{@listaInfo[3]}", "r")
+        @hash = Digest::MD5.hexdigest(File.read(file1))
+        @hash += @arquivo.cripto_tipo
+
         Compactacao.new(current_user, @filename + ".zip").generate("public/uploads/store/#{@listaInfo[3]}")
 
         if @arquivo.cripto_tipo == 'No_cypto'
           format.html { redirect_to arquivo_url(@arquivo), notice: "File was successfully created." }
           format.json { render :show, status: :created, location: @arquivo }       
-        else   
+        else
+
           arq = abrir_arquivo()
 
           if @arquivo.cripto_tipo == "Remove Line"          
@@ -73,7 +81,7 @@ class ArquivosController < ApplicationController
           end
 
           File.delete("public/uploads/cache/#{@cached_id}") if File.exist?("public/uploads/cache/#{@cached_id}")
-          File.delete("public/uploads/store/#{@filename3}") if File.exist?("public/uploads/store/#{@filename3}")
+          #File.delete("public/uploads/store/#{@filename3}") if File.exist?("public/uploads/store/#{@filename3}")
           format.html { redirect_to arquivo_url(@arq2), notice: "File was successfully created." }
           format.json { render :show, status: :created, location: @arq2 }      
         end
@@ -179,21 +187,34 @@ class ArquivosController < ApplicationController
   end
 
   def escrever_arquivo(tmp, arq)
-    arq.close unless arq.closed?
+    if Arquivo.find_by(hash_md5: @hash).nil?
+      arq.close unless arq.closed?
 
-    arqTmp = File.new("public/uploads/store/#{@filename+" - Encrypt_"+@arquivo.cripto_tipo+@extensao}", "w")
+      arqTmp = File.new("public/uploads/store/#{@filename+" - Encrypt_"+@arquivo.cripto_tipo+@extensao}", "w")
 
-    tmp.each  do |t|
-      arqTmp.write(t.force_encoding("UTF-8"))
+      tmp.each  do |t|
+        arqTmp.write(t.force_encoding("UTF-8"))
+      end
+      arqTmp.close unless arqTmp.closed?
+      arqTmpNew = File.new("public/uploads/store/#{@filename+" - Encrypt_"+@arquivo.cripto_tipo+@extensao}", "r")
+      arqTmpNew
+
+      @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave, hash_md5: @hash)
+      
+      @arq2.save
+      Copium.new(arquivo_id: @arq2.id, user_id: current_user.id, qntCopias: 1).save
+      @filename3 = JSON.parse(@arq2.image_data)["id"]
+      @arquivo.destroy
+    else
+      if Arquivo.joins(:copia).find_by(hash_md5: @hash, copia: {user_id: current_user.id}).nil?
+        @arq2 = Arquivo.find_by(hash_md5: @hash)
+        Copium.new(arquivo_id: @arq2.id, user_id: current_user.id, qntCopias: 1).save
+      else
+        @arq2 = Arquivo.find_by(hash_md5: @hash)
+        copia4 = Copium.find_by(user_id: current_user.id, arquivo_id: @arq2.id)
+        copia4.update(qntCopias: copia4.qntCopias + 1)
+      end
     end
-    arqTmp.close unless arqTmp.closed?
-    arqTmpNew = File.new("public/uploads/store/#{@filename+" - Encrypt_"+@arquivo.cripto_tipo+@extensao}", "r")
-    arqTmpNew
-    @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: current_user.id, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
-    
-    @arq2.save
-    @filename3 = JSON.parse(@arq2.image_data)["id"]
-    @arquivo.destroy
   end
 
   private
