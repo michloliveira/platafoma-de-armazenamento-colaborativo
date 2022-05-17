@@ -19,16 +19,6 @@ class Compactacao
         create_temporary_zip_file(arquivo)
     end
 
-    def save_files_on_server(applicant)
-        temp_folder = File.join(Rails.root.join('tmp', 'resumes'))
-        FileUtils.mkdir_p(temp_folder) unless Dir.exist?(temp_folder)
-
-        filename = "#{applicant.name.parameterize}-#{applicant.resume.filename}"
-        filepath = File.join(temp_folder, filename)
-        File.open(filepath, 'wb') { |f| f.write(applicant.resume.download) }
-        filepath
-    end
-
     def create_temporary_zip_file(filepath)
         temp_file = File.open(Rails.root.join('tmp', @zip_name), 'wb')
 
@@ -44,7 +34,7 @@ class Compactacao
                 end
         ensure
             temp_file.close
-            FileUtils.rm(filepath) 
+            #FileUtils.rm(filepath) 
         end
     end
 end

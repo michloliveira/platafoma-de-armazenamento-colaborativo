@@ -19,6 +19,9 @@ class ArquivosController < ApplicationController
   def index
     @arquivos = Arquivo.all
     @meus_arquivos = Arquivo.joins(:copia).where(copia: {user_id: current_user.id})
+    JSON.parse(Arquivo.all.select("sum(tamanho)soma").to_json(only:[:soma] ))[0]["soma"].nil? ? @tamanho = 0 : @tamanho = JSON.parse(Arquivo.all.select("sum(tamanho)soma").to_json(only:[:soma] ))[0]["soma"]/1024
+    JSON.parse(Arquivo.joins(:copia).where(copia: {user_id: current_user.id}).select("sum(tamanho)soma").to_json(only:[:soma] ))[0]["soma"].nil? ? @tamanhoUsuario = 0 : @tamanhoUsuario = JSON.parse(Arquivo.joins(:copia).where(copia: {user_id: current_user.id}).select("sum(tamanho)soma").to_json(only:[:soma] ))[0]["soma"]/1024
+
   end
 
   # GET /arquivos/1 or /arquivos/1.json
@@ -32,6 +35,24 @@ class ArquivosController < ApplicationController
 
   # GET /arquivos/1/edit
   def edit
+  end
+
+  def recuperarTamanho(arquivo)
+    
+    info = arquivo.image_data
+
+    listaInfo = info.split('"')
+    
+    extensao = ""
+    lista = listaInfo[16].split('.')
+    lista.each_with_index do |l, index|
+      if index > 0
+        @extensao += "." + l 
+      end
+    end
+    
+    lista[0].gsub(",", "").gsub(":", "").to_i
+
   end
 
   # POST /arquivos or /arquivos.json
@@ -66,6 +87,10 @@ class ArquivosController < ApplicationController
         Compactacao.new(current_user, @filename + ".zip").generate("public/uploads/store/#{@listaInfo[3]}")
 
         if @arquivo.cripto_tipo == 'No_cypto'
+          tamanho = recuperarTamanho(@arquivo)
+          @arquivo.update(tamanho: tamanho)
+          @arquivo.save
+      
           format.html { redirect_to arquivo_url(@arquivo), notice: "File was successfully created." }
           format.json { render :show, status: :created, location: @arquivo }       
         else
@@ -107,7 +132,15 @@ class ArquivosController < ApplicationController
 
   # DELETE /arquivos/1 or /arquivos/1.json
   def destroy
-    @arquivo.destroy
+    copias4 = Copium.find_by(user_id: current_user.id, arquivo_id: @arquivo.id)
+    if !copias4.nil? && copias4.qntCopias > 1
+      copias4.update(qntCopias: copias4.qntCopias-1)
+    else
+      copias4.delete
+      if Copium.find_by(arquivo_id: @arquivo.id).nil?
+        @arquivo.destroy
+      end
+    end
 
     respond_to do |format|
       format.html { redirect_to arquivos_url, notice: "File was successfully destroyed." }
@@ -133,6 +166,26 @@ class ArquivosController < ApplicationController
     
     arq = File.new("tmp/#{@filename}.zip", "r+")
 
+    arq
+  end
+
+  def abrir_arquivo_no_crypto()
+
+    info = @arquivo.image_data
+
+    @listaInfo = info.split('"')
+    
+      @extensao = ""
+      lista = @listaInfo[13].split('.')
+      lista.each_with_index do |l, index|
+        if index > 0
+          @extensao += "." + l 
+          #@extensao = ".zip"
+        end
+      end
+      @filename = lista[0]
+        
+    arq = File.new("public/uploads/store/#{@listaInfo[3]}", "r+")
     arq
   end
 
@@ -187,6 +240,7 @@ class ArquivosController < ApplicationController
   end
 
   def escrever_arquivo(tmp, arq)
+
     if Arquivo.find_by(hash_md5: @hash).nil?
       arq.close unless arq.closed?
 
@@ -201,6 +255,8 @@ class ArquivosController < ApplicationController
 
       @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave, hash_md5: @hash)
       
+      @arq2.tamanho = recuperarTamanho(@arq2)
+      
       @arq2.save
       Copium.new(arquivo_id: @arq2.id, user_id: current_user.id, qntCopias: 1).save
       @filename3 = JSON.parse(@arq2.image_data)["id"]
@@ -209,10 +265,14 @@ class ArquivosController < ApplicationController
       if Arquivo.joins(:copia).find_by(hash_md5: @hash, copia: {user_id: current_user.id}).nil?
         @arq2 = Arquivo.find_by(hash_md5: @hash)
         Copium.new(arquivo_id: @arq2.id, user_id: current_user.id, qntCopias: 1).save
+        @arquivo.destroy
+    
       else
         @arq2 = Arquivo.find_by(hash_md5: @hash)
         copia4 = Copium.find_by(user_id: current_user.id, arquivo_id: @arq2.id)
         copia4.update(qntCopias: copia4.qntCopias + 1)
+        @arquivo.destroy
+    
       end
     end
   end

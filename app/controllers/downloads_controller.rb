@@ -6,7 +6,8 @@ class DownloadsController < ApplicationController
     def new 
       @filename0 = JSON.parse(@arquivo.image_data)["metadata"]["filename"]
       arq = abrir_arquivo()
-      if current_user.id == @arquivo.user_id
+      copias = Copium.find_by(user_id: current_user.id, arquivo_id: @arquivo.id)
+      if current_user.id == copias.user_id
         
           if @arquivo.cripto_tipo == "Remove Line"          
             linha(arq)
@@ -29,7 +30,7 @@ class DownloadsController < ApplicationController
       @filename2 = JSON.parse(@arq2.image_data)["metadata"]["filename"]
       
       File.delete("public/uploads/cache/#{@cached_id}") if File.exist?("public/uploads/cache/#{@cached_id}")
-      if current_user.id == @arquivo.user_id
+      if current_user.id == copias.user_id
         File.delete("public/uploads/store/#{@filename2}") if File.exist?("public/uploads/store/#{@filename2}")      
       end
       @arq2.destroy
@@ -118,7 +119,7 @@ class DownloadsController < ApplicationController
         
         arqTmpNew = File.new("public/uploads/store/#{@listaInfo[3]}", "r")
         arqTmpNew
-        @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, user_id: current_user.id, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
+        @arq2 = Arquivo.new(image: arqTmpNew, description: @arquivo.description, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
                    
         @cached_id = JSON.parse(@arq2.cached_image_data)["id"]
         

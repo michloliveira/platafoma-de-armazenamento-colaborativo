@@ -1,6 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<h1 class="page-title">Users Files</h1>
+<h1 class="page-title">Users Files - Espaço Usado: <%=@tamanho%>KB</h1>
 
 <div class="cards-list">
   <% @arquivos.each do |arquivo| %>
@@ -37,10 +37,13 @@
   <% end %>
 </div>
 
-<h1 class="page-title">My Files</h1>
+<h1 class="page-title">My Files - Espaço Usado: <%=@tamanhoUsuario%>KB</h1>
 
 <div class="cards-list">
   <% @meus_arquivos.each do |arquivo| %>
+    <%i = 0%>
+    <% copias = Copium.find_by(user_id: current_user.id, arquivo_id: arquivo.id)%>
+    <% while i < copias.qntCopias %>    
     <div class="card">
       <%if arquivo.image.present?%>      
         <%if arquivo.image.metadata["mime_type"].split('/')[0] == "image"%>
@@ -71,6 +74,8 @@
         <% end %>    
       </div>
     </div> 
+    <%i+=1%>
+    <% end %>
   <% end %>
 </div>
 

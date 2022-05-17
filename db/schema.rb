@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_14_010235) do
+ActiveRecord::Schema.define(version: 2022_05_17_011550) do
 
   create_table "arquivos", force: :cascade do |t|
     t.text "image_data"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 2022_05_14_010235) do
     t.string "cripto_tipo"
     t.string "cripto_chave"
     t.string "hash_md5"
+    t.bigint "tamanho"
   end
 
   create_table "copia", force: :cascade do |t|
