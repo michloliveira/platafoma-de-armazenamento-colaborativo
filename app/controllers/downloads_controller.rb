@@ -2,12 +2,22 @@ require "down"
 
 class DownloadsController < ApplicationController
     before_action :set_arquivo
+    before_action :check_user
+
+    def check_user
+      copias = Copium.find_by(user_id: current_user.id, arquivo_id: @arquivo.id)
+      if copias.nil?
+        respond_to do |format|
+          format.html { redirect_to arquivos_path, alert: "You are not authorized to download another users files." }
+        end
+      end
+    end
 
     def new 
       @filename0 = JSON.parse(@arquivo.image_data)["metadata"]["filename"]
       arq = abrir_arquivo()
       copias = Copium.find_by(user_id: current_user.id, arquivo_id: @arquivo.id)
-      if current_user.id == copias.user_id
+      if !copias.nil? && current_user.id == copias.user_id
         
           if @arquivo.cripto_tipo == "Remove Line"          
             linha(arq)
@@ -19,13 +29,11 @@ class DownloadsController < ApplicationController
           end
       
       else
-        @arq2 = Arquivo.new(image: arq, description: @arquivo.description, user_id: current_user.id, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
+        @arq2 = Arquivo.new(image: arq, description: @arquivo.description, cripto_tipo: @arquivo.cripto_tipo, cripto_chave: @chave)
         @cached_id = JSON.parse(@arq2.cached_image_data)["id"]
       end
 
-      if current_user.id == copias.user_id 
-        puts(current_user.id, copias.user_id)
-        Dir.mkdir("../../download_teste") unless File.exists?("../../download_teste")
+      Dir.mkdir("../../download_teste") unless File.exists?("../../download_teste")
 
       tempfile = Down.download("http://localhost:3000/" + @arq2.image_url, destination: "../../download_teste")
 
@@ -41,14 +49,6 @@ class DownloadsController < ApplicationController
           format.html { redirect_to arquivos_path, notice: "File was successfully downloaded." }
           #format.json { render :show, status: :created, location: @arquivo }    
       end
-
-    else 
-      respond_to do |format|
-        format.html { redirect_to arquivos_path, alert: "You are not authorized to download another users' files." }    
-    end
-
-      end 
-      
     end
 
 
@@ -136,5 +136,5 @@ class DownloadsController < ApplicationController
         @arq2.save
 
       end
-  #end
-end
+
+    end

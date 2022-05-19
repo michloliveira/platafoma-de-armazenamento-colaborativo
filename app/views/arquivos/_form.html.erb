@@ -6,10 +6,12 @@
       <ul>
       <% arquivo.errors.full_messages.each do |message| %>
         <li><%= message %></li>
+        
       <% end %>
       </ul>
     </div>
   <% end %>
+  
 
   <div class='page-content-card'>
     <div class='form-field-upload'>
@@ -28,7 +30,7 @@
 
     <div class="form-field-select">
       <%= form.label :Crypto_Type%>
-      <%= form.select :cripto_tipo, ['Remove Line', 'Caesar', 'AES', 'No_cypto']%>
+      <%= form.select :cripto_tipo, ['Remove Line', 'Caesar', 'AES']%>
     </div>
 
     <div class="form-field-actions">

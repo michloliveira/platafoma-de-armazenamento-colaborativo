@@ -93,14 +93,14 @@ class ArquivosController < ApplicationController
 
         Compactacao.new(current_user, @filename + ".zip").generate("public/uploads/store/#{@listaInfo[3]}")
 
-        if @arquivo.cripto_tipo == 'No_cypto'
-          tamanho = recuperarTamanho(@arquivo)
-          @arquivo.update(tamanho: tamanho)
-          @arquivo.save
+        # if @arquivo.cripto_tipo == 'No_cypto'
+        #   tamanho = recuperarTamanho(@arquivo)
+        #   @arquivo.update(tamanho: tamanho)
+        #   @arquivo.save
       
-          format.html { redirect_to arquivo_url(@arquivo), notice: "File was successfully created." }
-          format.json { render :show, status: :created, location: @arquivo }       
-        else
+        #   format.html { redirect_to arquivo_url(@arquivo), notice: "File was successfully created." }
+        #   format.json { render :show, status: :created, location: @arquivo }       
+        # else
 
           arq = abrir_arquivo()
 
@@ -116,7 +116,7 @@ class ArquivosController < ApplicationController
           #File.delete("public/uploads/store/#{@filename3}") if File.exist?("public/uploads/store/#{@filename3}")
           format.html { redirect_to arquivo_url(@arq2), notice: "File was successfully created." }
           format.json { render :show, status: :created, location: @arq2 }      
-        end
+
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @arquivo.errors, status: :unprocessable_entity }
@@ -181,6 +181,7 @@ class ArquivosController < ApplicationController
     
     
     arq = File.new("tmp/#{@filename}.zip", "r+")
+    #arq = File.new("public/uploads/store/#{@listaInfo[3]}", "r+")
 
     arq
   end
