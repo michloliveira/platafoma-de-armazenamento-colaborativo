@@ -8,7 +8,10 @@ body {
   font-size: 13px;
   line-height: 18px;
   .page-title {
-    margin-left: 10vw;
+    padding-top: 55px;
+    text-align: center;
+    color: #242038;
+    /*margin-left: 10vw;*/
   }
   .buttons-container {
     margin: 20px 10vw;
@@ -16,23 +19,28 @@ body {
   .button_to {
     width: auto;
     display: inline;
-    .button {
-      font-size: 14px;
-      height: 30px;
-      text-align: center;
-      margin-right: 10px;
-      color: white;
-      background-color: black;
+    .button {      
+      background-color: #725ac1;
       border: none;
-      border-radius: 5px;
-      padding: 0 10px;
+      box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #FFFFFF;
+      padding: 10px;
+      width: 300px;
+      text-align: center;
+      transition-duration: 0.4s;
+      text-decoration: none
+    }
+    .button:hover {
+      background-color: #242038;
     }
   }
 }
 
 .cards-list {
   margin: 0 10vw;
-  width: 80vw;
+  width: 85vw;
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 10px;
@@ -40,9 +48,9 @@ body {
 
 .card {
   margin: 10px;
-  border-radius: 5%;
-  border: solid lightgray;
-  border-width: 2px;
+  padding: 10px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;  border-radius: 5%;
+  border: none;
   width: 200px;
   align-items: center;
   .card-image {
@@ -71,31 +79,33 @@ body {
     width:170px;
     text-align: center;
     .button_to {
-      width: auto;
-      display: inline;
-      > button {
-        font-size: 16px;
-        height: 30px;
-        width: 30px;
-        text-align: center;
-        margin: 0 10px;
-        color: black;
-        background-color: lightgray;
-        border: none;
-        border-radius: 15px;
-        padding: 0;
-        :hover {
-          color: salmon;
-        }
+      font-size: 16px;
+      height: 30px;
+      width: 30px;
+      text-align: center;
+      margin: 0 10px;
+      color: black;
+      border: none;
+      border-radius: 15px;
       }
     }
+  .icon-button {
+    background-color: transparent;
+    border: none;
+    width: 25px;
+    height: 20px;
+
+  }
+  .icon-button:hover {
+    background-color: #725ac1;
+    border-radius: 8%;
   }
 }
 
-.card:hover {
-  border: solid gray;
-  border-width: 2px;
-}
+
+// .card:hover {
+//   border: solid gray;
+// }
 
 .file-data {
   width: calc(80vw);
@@ -104,8 +114,8 @@ body {
   margin: 0 10vw 10px 10vw;
   .data-col-img {
     margin: 0;
-    width: 65%;
-    height: 60vh;
+    width: 40%;
+    height: 55vh;
     background-color: lightgray;
     object-fit: contain;
     display: flex;
@@ -114,13 +124,13 @@ body {
   }
   .data-col-text {
     margin: 10px;
-    width: 30%;
+    width: 45%;
     display: flex;
     flex-direction: column;
     .data-text {
-      margin: 0;
+      margin: 10px;
       margin-bottom: 5px;
-      color: black;
+      color: #242038;
       font-size: 14px;
       overflow: hidden;
       word-wrap: break-word;
@@ -129,32 +139,25 @@ body {
 }
 
 .page-content-card {
-  margin: 0 10vw 20px 10vw;
+  margin: auto;
   padding: 10px;
-  border-radius: 10px;
-  background-color: lightgray;
-  width: 80vw;
+  width: 50vw;
   display: grid;
   justify-content: center;
 }
 
 .form-field {
-  margin: 5px;
+  //margin: 5px;
   font-size: 14px;
-  > input {
-    border: white;
-    border-radius: 5px;
-    height: 25px;
-    margin-top: 5px;
-    padding: 0 5px;
-    width: 300px;
-  }
-  > textarea {
-    border: white;
-    border-radius: 5px;
-    margin-top: 5px;
-    padding: 2px 5px;
-    width: 300px;
+  border: green;
+  > input, textarea{
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
   }
 }
 
@@ -165,6 +168,7 @@ body {
   > input {
     margin: 2px 3px 2px 0;
   }
+
 }
 
 .form-field-actions {
@@ -172,15 +176,22 @@ body {
   display: flex;
   justify-content: center;
   > input {
-    font-size: 14px;
-    height: 30px;
-    text-align: center;
-    margin: 0 10px;
-    color: white;
-    background: black;
+    background-color: #725ac1;
     border: none;
-    border-radius: 5px;
-    padding: 0 10px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #FFFFFF;
+    padding: 10px;
+    width: 300px;
+    text-align: center;
+    transition-duration: 0.4s;
+    text-decoration: none;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  > input:hover {
+    background-color: #242038;
   }
 }
 
@@ -188,35 +199,39 @@ body {
   margin: 5px;
   font-size: 14px;
   > select {
-    margin: 5px 0;
-    padding: 0 5px;
-    height: 30px;
-    color: white;
-    background-color: black;
-    border: none;
+    background-position: 218px center;
+    background-color: #ccc;
+    width: 300px;
+    height: 40px;
+    border: 1px solid #ddd;
     border-radius: 5px;
+    padding: 10px;
   }
 }
 
 .form-field-upload {
   margin: 5px;
-  font-size: 14px;
+  font-size: 15px;
+
 }
 
 .links-container {
   margin: 5px;
+  text-align: center;
   font-size: 14px;
   > a {
-    font-size: 14px;
-    color: black;
+    text-decoration: none;
+    font-size: 15px;
+    color: #725ac1;
   }
   > a:hover {
     background: none;
-    color: salmon;
+    color: #242038;
   }
 }
 
 .botao-redir-arq {
+  /*background-color: #c00;*/
   margin: 0 10vw 20px 10vw;
   padding: 10px;
   width: 80vw;

@@ -26,6 +26,11 @@ class ArquivosController < ApplicationController
 
   # GET /arquivos/1 or /arquivos/1.json
   def show
+    if current_user.id != @arquivo.user_id
+      respond_to do |format|
+        format.html { redirect_to arquivos_path, alert: "You are not authorized to see another users' files." }
+      end
+    end
   end
 
   # GET /arquivos/new
@@ -146,6 +151,11 @@ class ArquivosController < ApplicationController
       format.html { redirect_to arquivos_url, notice: "File was successfully destroyed." }
       format.json { head :no_content }
     end
+  else
+    respond_to do |format|
+      format.html { redirect_to arquivos_url, notice: "You are not authorized to delete another users' files." }
+    end
+  end
   end
 
   def abrir_arquivo()
@@ -280,12 +290,17 @@ class ArquivosController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_arquivo
-      @arquivo = Arquivo.find(params[:id])
+      #if current_user.id == @arquivo.user_id 
+        @arquivo = Arquivo.find(params[:id])
+      #else 
+      #  respond_to do |format|
+      #    format.html { redirect_to arquivos_url, notice: "You are not authorized to set another users' files." }
+      #end
     end
 
     # Only allow a list of trusted parameters through.
     def arquivo_params
       params.require(:arquivo).permit(:image, :description, :user_id, :cripto_tipo, :cripto_chave)
     end
-
+  #end
 end
