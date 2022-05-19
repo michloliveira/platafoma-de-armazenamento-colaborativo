@@ -15,19 +15,24 @@
  */
  body { 
   margin: 0;
+  position: relative;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 .header {
-  width: calc(100vw-20px);
+  /*width: calc(100vw-20px);*/
+  width: 99%;
+  margin-top: -18px;
+  position: fixed;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   overflow: hidden;
-  background-color: lightsalmon;
+  background-color: #725ac1;
   padding: 10px;
 }
 
 .header-option {
   float: right;
-  color: black;
+  color: white;
   text-align: center;
   padding: 10px;
   margin: 0 5px;
@@ -37,8 +42,7 @@
 }
 
 .header a:hover {
-  background-color: lightgray;
-  color: black;
+  color: #242038;
 }
 
 .footer {
@@ -86,5 +90,5 @@
         font: 15px Georgia, "Times New Roman", Times, serif;
         color: rgb(15, 34, 179);
         text-shadow: 1px 1px 1px #FFF;
-        border:auto;
+        border:none;
    }
