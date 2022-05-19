@@ -4,7 +4,7 @@ class SessionsController < Devise::SessionsController
     if user && user.valid_password?(sign_in_params[:password])
       sign_in user
 
-      redirect_to arquivos_path, jwt_user: user.generate_jwt, status: 200
+      redirect_to arquivos_path, jwt_user: user.generate_jwt
     else
       render json: { errors: { 'email or password' => ['is invalid'] } }, status: :unprocessable_entity # lançar erro 
     end
