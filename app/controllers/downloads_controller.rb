@@ -23,8 +23,8 @@ class DownloadsController < ApplicationController
         @cached_id = JSON.parse(@arq2.cached_image_data)["id"]
       end
 
-      if current_user.id == @arquivo.user_id 
-        puts(current_user.id, @arquivo.user_id)
+      if current_user.id == copias.user_id 
+        puts(current_user.id, copias.user_id)
         Dir.mkdir("../../download_teste") unless File.exists?("../../download_teste")
 
       tempfile = Down.download("http://localhost:3000/" + @arq2.image_url, destination: "../../download_teste")

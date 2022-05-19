@@ -26,7 +26,9 @@ class ArquivosController < ApplicationController
 
   # GET /arquivos/1 or /arquivos/1.json
   def show
-    if current_user.id != @arquivo.user_id
+    copias4 = Copium.find_by(user_id: current_user.id, arquivo_id: @arquivo.id)
+    
+    if !copias4.nil? && current_user.id != copias4.user_id
       respond_to do |format|
         format.html { redirect_to arquivos_path, alert: "You are not authorized to see another users' files." }
       end
@@ -138,22 +140,26 @@ class ArquivosController < ApplicationController
   # DELETE /arquivos/1 or /arquivos/1.json
   def destroy
     copias4 = Copium.find_by(user_id: current_user.id, arquivo_id: @arquivo.id)
-    if !copias4.nil? && copias4.qntCopias > 1
-      copias4.update(qntCopias: copias4.qntCopias-1)
-    else
-      copias4.delete
-      if Copium.find_by(arquivo_id: @arquivo.id).nil?
-        @arquivo.destroy
-      end
-    end
+    
+    if !copias4.nil? && current_user.id == copias4.user_id
 
-    respond_to do |format|
-      format.html { redirect_to arquivos_url, notice: "File was successfully destroyed." }
-      format.json { head :no_content }
-    end
-  else
-    respond_to do |format|
-      format.html { redirect_to arquivos_url, notice: "You are not authorized to delete another users' files." }
+      if !copias4.nil? && copias4.qntCopias > 1
+        copias4.update(qntCopias: copias4.qntCopias-1)
+      else
+        copias4.delete
+        if Copium.find_by(arquivo_id: @arquivo.id).nil?
+          @arquivo.destroy
+        end
+      end
+
+      respond_to do |format|
+        format.html { redirect_to arquivos_url, notice: "File was successfully destroyed." }
+        format.json { head :no_content }
+      end
+    
+    else
+      respond_to do |format|
+        format.html { redirect_to arquivos_url, notice: "You are not authorized to delete another users' files." }
     end
   end
   end
