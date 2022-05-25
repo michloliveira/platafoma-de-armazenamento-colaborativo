@@ -34,7 +34,7 @@ class Compactacao
                 end
         ensure
             temp_file.close
-            #FileUtils.rm(filepath) 
+            FileUtils.rm(filepath)
         end
     end
 end

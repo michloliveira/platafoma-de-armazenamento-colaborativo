@@ -10,9 +10,19 @@ require 'digest/md5'
 class ArquivosController < ApplicationController
   before_action :set_arquivo, only: %i[ show edit update destroy ]
   before_action :redireciona, only: %i[edit update]
+  before_action :check_user, only: %i[ show ]
 
   def redireciona
     redirect_to root_path
+  end
+
+  def check_user
+    copias = Copium.find_by(user_id: current_user.id, arquivo_id: @arquivo.id)
+    if copias.nil?
+      respond_to do |format|
+        format.html { redirect_to arquivos_path, alert: "You are not authorized to see another user files." }
+      end
+    end
   end
 
   # GET /arquivos or /arquivos.json
@@ -159,7 +169,7 @@ class ArquivosController < ApplicationController
     
     else
       respond_to do |format|
-        format.html { redirect_to arquivos_url, notice: "You are not authorized to delete another users' files." }
+        format.html { redirect_to arquivos_url, alert: "You are not authorized to delete another user files." }
     end
   end
   end
@@ -173,7 +183,7 @@ class ArquivosController < ApplicationController
       lista = @listaInfo[13].split('.')
       lista.each_with_index do |l, index|
         if index > 0
-          #@extensao += "." + l 
+          # @extensao += "." + l 
           @extensao = ".zip"
         end
       end
@@ -181,7 +191,7 @@ class ArquivosController < ApplicationController
     
     
     arq = File.new("tmp/#{@filename}.zip", "r+")
-    #arq = File.new("public/uploads/store/#{@listaInfo[3]}", "r+")
+    # arq = File.new("public/uploads/store/#{@listaInfo[3]}", "r+")
 
     arq
   end
